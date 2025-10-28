@@ -1,0 +1,188 @@
+{
+  "basics": {
+    "name": "Abhinesh Jha",
+    "label": "Backend Developer",
+    "image": "",
+    "email": "jhaabhinesh977@gmail.com",
+    "phone": "",
+    "url": "https://abhineshhh.me",
+    "summary": "Backend developer specializing in Java and Spring Boot with expertise in building production-grade distributed systems. Strong foundation in RESTful API design, database optimization, and security implementation. Experienced in network programming, concurrency patterns, transaction management, and asynchronous processing. Passionate about clean architecture, performance optimization, and solving complex technical challenges with scalable solutions.",
+    "location": {
+      "address": "",
+      "postalCode": "",
+      "city": "",
+      "countryCode": "IN",
+      "region": ""
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "abhineshjha",
+        "url": "https://linkedin.com/in/abhineshjha"
+      },
+      {
+        "network": "GitHub",
+        "username": "Abhineshhh",
+        "url": "https://github.com/Abhineshhh"
+      }
+    ]
+  },
+  "work": [],
+  "volunteer": [
+    {
+      "organization": "HackSquad by Novu",
+      "position": "Open Source Contributor",
+      "url": "https://github.com/novuhq/novu",
+      "startDate": "2024",
+      "endDate": "2024",
+      "summary": "Winner of HackSquad open-source program. Developed new features and improved code quality through testing and documentation.",
+      "highlights": []
+    },
+    {
+      "organization": "Social Summer of Code",
+      "position": "Open Source Contributor",
+      "url": "",
+      "startDate": "2024",
+      "endDate": "2024",
+      "summary": "Winner of Social Summer of Code. Enhanced frontend UX and modularized Python programs.",
+      "highlights": []
+    },
+    {
+      "organization": "Innogeeks Winter of Code",
+      "position": "Open Source Contributor",
+      "url": "",
+      "startDate": "2023",
+      "endDate": "2023",
+      "summary": "Winner of Innogeeks Winter of Code. Implemented features and resolved bugs in web applications.",
+      "highlights": []
+    }
+  ],
+  "education": [
+    {
+      "institution": "Maharshi Dayanand University",
+      "url": "",
+      "area": "Computer Science",
+      "studyType": "B.Tech",
+      "startDate": "",
+      "endDate": "",
+      "score": "8.2/10 CGPA",
+      "courses": [
+        "Operating Systems",
+        "Database Management Systems",
+        "Computer Networks",
+        "Data Structures",
+        "Algorithms"
+      ]
+    }
+  ],
+  "awards": [],
+  "certificates": [],
+  "publications": [],
+  "skills": [
+    {
+      "name": "Languages",
+      "level": "",
+      "keywords": [
+        "Java",
+        "C",
+        "C++",
+        "Python",
+        "SQL",
+        "JavaScript"
+      ]
+    },
+    {
+      "name": "Frameworks & Libraries",
+      "level": "",
+      "keywords": [
+        "Spring Boot",
+        "Spring MVC",
+        "Spring Data JPA",
+        "Spring Security",
+        "Hibernate",
+        "Maven"
+      ]
+    },
+    {
+      "name": "Databases",
+      "level": "",
+      "keywords": [
+        "MySQL",
+        "PostgreSQL",
+        "MongoDB"
+      ]
+    },
+    {
+      "name": "Tools & Technologies",
+      "level": "",
+      "keywords": [
+        "Git",
+        "Docker",
+        "Postman",
+        "Linux",
+        "Swagger",
+        "Firebase"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "fluency": "Professional"
+    }
+  ],
+  "interests": [],
+  "references": [],
+  "projects": [
+    {
+      "name": "TaskManager API",
+      "description": "Engineered RESTful API with CRUD operations supporting 1000+ daily tasks",
+      "highlights": [
+        "Engineered RESTful API with CRUD operations supporting 1000+ daily tasks",
+        "Automated audit logging tracking 10,000+ changes for compliance",
+        "Optimized transaction management, reducing database locks by 60\\",
+        "Achieved 200ms response time via JPA query optimization",
+        "Ensured data integrity with transaction boundaries and persistence",
+        "Deployed containerized app with Docker, ensuring 99.9\\"
+      ],
+      "keywords": [
+        "Spring Boot",
+        "Java",
+        "MySQL"
+      ],
+      "startDate": "",
+      "endDate": "",
+      "url": "https://github.com/Abhineshhh/TaskManager",
+      "roles": [
+        "Developer"
+      ],
+      "entity": "",
+      "type": "application"
+    },
+    {
+      "name": "PeerLink - Secure P2P File Sharing Platform",
+      "description": "Built with socket programming to enable file sharing via sockets without cloud storage",
+      "highlights": [
+        "Built with socket programming to enable file sharing via sockets without cloud storage",
+        "Built P2P file transfer system supporting 500MB+ transfers",
+        "7-layer security: PIN authentication, rate limiting, auto-delete",
+        "Architected thread-safe system handling 50+ transfers concurrently",
+        "Built custom HTTP parser achieving 30\\",
+        "Developed file validation preventing malicious uploads"
+      ],
+      "keywords": [
+        "Java",
+        "Next.js",
+        "TypeScript"
+      ],
+      "startDate": "",
+      "endDate": "",
+      "url": "https://github.com/Abhineshhh/Peerlink",
+      "roles": [
+        "Developer"
+      ],
+      "entity": "",
+      "type": "application"
+    }
+  ]
+}
