@@ -1,0 +1,15 @@
+% Custom macros and formatting helpers
+
+% Experience/Project entry: \cventry{title}{tech}{link}{details}
+\newcommand{\cventry}[4]{%
+  \noindent\textbf{#1} \textbar{} \textit{#2} \hfill #3\par\vspace{2pt}
+  #4
+  \vspace{3mm}
+}
+
+% Compact itemize with no left margin
+\newenvironment{itemizecompact}{%
+  \begin{itemize}[leftmargin=12pt,itemsep=1pt,topsep=0pt,parsep=0pt,partopsep=0pt]
+}{%
+  \end{itemize}
+}

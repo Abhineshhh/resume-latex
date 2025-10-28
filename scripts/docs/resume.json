@@ -1,0 +1,137 @@
+{
+  "basics": {
+    "name": "Abhinesh Jha",
+    "label": "Backend Developer",
+    "image": "",
+    "email": "jhaabhinesh977@gmail.com",
+    "phone": "",
+    "url": "https://abhineshhh.me",
+    "summary": "Backend developer specializing in Java and Spring Boot with expertise in building production-grade distributed systems.",
+    "location": {
+      "address": "",
+      "postalCode": "",
+      "city": "",
+      "countryCode": "IN",
+      "region": ""
+    },
+    "profiles": [
+      {
+        "network": "LinkedIn",
+        "username": "abhineshjha",
+        "url": "https://linkedin.com/in/abhineshjha"
+      },
+      {
+        "network": "GitHub",
+        "username": "Abhineshhh",
+        "url": "https://github.com/Abhineshhh"
+      }
+    ]
+  },
+  "work": [],
+  "volunteer": [
+    {
+      "organization": "HackSquad by Novu",
+      "position": "Open Source Contributor",
+      "url": "https://github.com/novuhq/novu",
+      "startDate": "2024",
+      "endDate": "2024",
+      "summary": "Winner of HackSquad open-source program. Developed new features and improved code quality through testing and documentation.",
+      "highlights": []
+    },
+    {
+      "organization": "Social Summer of Code",
+      "position": "Open Source Contributor",
+      "url": "",
+      "startDate": "2024",
+      "endDate": "2024",
+      "summary": "Winner of Social Summer of Code. Enhanced frontend UX and modularized Python programs.",
+      "highlights": []
+    },
+    {
+      "organization": "Innogeeks Winter of Code",
+      "position": "Open Source Contributor",
+      "url": "",
+      "startDate": "2023",
+      "endDate": "2023",
+      "summary": "Winner of Innogeeks Winter of Code. Implemented features and resolved bugs in web applications.",
+      "highlights": []
+    }
+  ],
+  "education": [
+    {
+      "institution": "Maharshi Dayanand University",
+      "url": "",
+      "area": "Computer Science",
+      "studyType": "B.Tech",
+      "startDate": "",
+      "endDate": "",
+      "score": "8.2/10 CGPA",
+      "courses": [
+        "Operating Systems",
+        "Database Management Systems",
+        "Computer Networks",
+        "Data Structures",
+        "Algorithms"
+      ]
+    }
+  ],
+  "awards": [],
+  "certificates": [],
+  "publications": [],
+  "skills": [
+    {
+      "name": "Languages",
+      "level": "",
+      "keywords": [
+        "Java",
+        "C",
+        "C++",
+        "Python",
+        "SQL",
+        "JavaScript"
+      ]
+    },
+    {
+      "name": "Frameworks & Libraries",
+      "level": "",
+      "keywords": [
+        "Spring Boot",
+        "Spring MVC",
+        "Spring Data JPA",
+        "Spring Security",
+        "Hibernate",
+        "Maven"
+      ]
+    },
+    {
+      "name": "Databases",
+      "level": "",
+      "keywords": [
+        "MySQL",
+        "PostgreSQL",
+        "MongoDB"
+      ]
+    },
+    {
+      "name": "Tools & Technologies",
+      "level": "",
+      "keywords": [
+        "Git",
+        "Docker",
+        "Postman",
+        "Linux",
+        "Swagger",
+        "Firebase"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "language": "English",
+      "fluency": "Professional"
+    }
+  ],
+  "interests": [],
+  "references": [],
+  "projects": []
+}
