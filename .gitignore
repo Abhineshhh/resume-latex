@@ -29,12 +29,6 @@ venv/
 dist/
 build/
 
-# Generated files (these are built by CI/local scripts)
-docs/web/index.html
-docs/resume.json
-docs/README.md
-docs/index.pdf
-
 # Auto-generated PR info
 sections/latest_pr.tex
 
