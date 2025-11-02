@@ -79,7 +79,7 @@
 
 ---
 
-*Last updated: October 28, 2025*
+*Last updated: November 02, 2025*
 
 *This resume is auto-generated from LaTeX source files using GitHub Actions.*
 
