@@ -1,359 +1,301 @@
-# Resume - LaTeX
+# Resume LaTeX Generator
 
-> Automated resume system with multi-format generation and auto-updating GitHub contributions.
+A professional resume generation system that creates both PDF and JSON Resume formats from LaTeX source files. Automatically fetches your latest GitHub contributions and maintains up-to-date resume content.
 
 ## 🚀 Features
 
-- **Multi-format output**: PDF, HTML, JSON Resume, Markdown
-- **Auto-updates**: Fetches latest merged PR from GitHub weekly
-- **GitHub Pages**: Deployed automatically at `https://resume.abhineshhh.me/`
-- **Modular structure**: Easy to customize sections
-- **CI/CD**: Builds and deploys on every push
+- **LaTeX to PDF**: Professional PDF generation using LaTeX
+- **JSON Resume**: Auto-generates JSON Resume format (jsonresume.org compatible)
+- **GitHub Integration**: Automatically fetches your latest merged PR
+- **CI/CD Ready**: GitHub Actions workflow for automated builds
+- **Vercel Deployment**: Optimized for Vercel hosting
+- **Modular Architecture**: Easy to customize sections
+- **Test Suite**: Comprehensive testing for all utilities
 
-## 📦 Quick Start
+## 📋 Prerequisites
 
-### Prerequisites
+- **Python 3.12+** (for scripts)
+- **LaTeX Distribution**: 
+  - Linux/macOS: TeX Live
+  - Windows: MiKTeX or TeX Live
+- **Make** (optional, for automation)
+  - Windows users: See [Windows Usage](#-windows-usage) below
 
-- **Python 3.x** with `requests` library
-- **LaTeX distribution** (MiKTeX or TeX Live)
+## 🛠️ Installation
 
-### Local Build
+### 1. Clone the Repository
 
 ```bash
-# Fetch latest PR and compile PDF
+git clone https://github.com/Abhineshhh/resume-latex.git
+cd resume-latex
+```
+
+### 2. Install Python Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure Your Information
+
+Edit `scripts/config.py` with your personal information:
+
+```python
+PERSONAL_INFO = {
+    "name": "Your Name",
+    "title": "Your Title",
+    "email": "your.email@example.com",
+    # ... update all fields
+}
+
+GITHUB_USERNAME = "yourusername"
+```
+
+## 🎯 Usage
+
+### Linux/macOS/WSL
+
+Use the Makefile for easy commands:
+
+```bash
+# Build PDF only
 make build
 
-# Generate all formats (PDF, HTML, JSON, MD)
-make all-formats
+# Build all formats (PDF + JSON)
+make all
 
-# Preview HTML resume locally
-make serve
+# Run tests
+make test
+
+# Clean generated files
+make clean
+
+# Fetch latest PR only
+make fetch-pr
 ```
 
-### Edit Content
+### 💻 Windows Usage
 
-Edit files in `sections/` directory:
-- `summary.tex` - Professional summary
-- `projects.tex` - Projects with tech stack
-- `skills.tex` - Technical skills
-- `education.tex` - Academic background
-- `open_source.tex` - Open source contributions (+ auto-fetched latest PR)
+**Option 1: Use PowerShell Scripts (Recommended)**
 
-### Deploy
+```powershell
+# Run tests
+python tests/test_utils.py
 
-```bash
-git add .
-git commit -m "Update resume"
-git push
+# Fetch latest PR
+python scripts/fetch_latest_pr.py
+
+# Build PDF
+latexmk -pdf -interaction=nonstopmode cv.tex
+
+# Generate JSON Resume
+python scripts/generate_json.py
+
+# Build everything
+python scripts/fetch_latest_pr.py
+latexmk -pdf -interaction=nonstopmode cv.tex
+python scripts/generate_json.py
 ```
 
-GitHub Actions automatically:
-1. Fetches your latest merged PR
-2. Compiles PDF
-3. Generates HTML, JSON, Markdown
-4. Deploys to GitHub Pages
+**Option 2: Use WSL (Windows Subsystem for Linux)**
 
-## 🔗 Resume Links
+Install WSL and use the Makefile commands as shown above.
 
-After deployment, your resume will be available at:
+**Option 3: Install Make for Windows**
 
-- **PDF (Main)**: `https://resume.abhineshhh.me/` → Direct PDF view
-- **HTML Version**: `https://resume.abhineshhh.me/web/` → Interactive HTML
-- **JSON Resume**: `https://resume.abhineshhh.me/resume.json` → JSON Resume schema
-- **Markdown**: `https://resume.abhineshhh.me/README.md` → GitHub-style markdown
+- Install Chocolatey: https://chocolatey.org/
+- Run: `choco install make`
+- Use Makefile commands
 
-## 📂 Structure
+### Clean Build Artifacts (Windows)
+
+```powershell
+# Clean LaTeX files
+latexmk -c
+
+# Remove generated files
+Remove-Item cv.pdf -ErrorAction SilentlyContinue
+Remove-Item sections/latest_pr.tex -ErrorAction SilentlyContinue
+Remove-Item docs/*.json -ErrorAction SilentlyContinue
+Remove-Item docs/*.pdf -ErrorAction SilentlyContinue
+```
+
+## 📁 Project Structure
 
 ```
 resume-latex/
-├── cv.tex                    # Main LaTeX file
-├── sections/                 # Modular content
+├── cv.tex                  # Main LaTeX file
+├── Makefile               # Build automation
+├── requirements.txt       # Python dependencies
+├── pyrightconfig.json     # Python type checking config
+├── .github/
+│   └── workflows/
+│       └── build.yml      # CI/CD workflow
+├── docs/                  # Generated output (for Vercel)
+│   ├── index.pdf         # PDF copy for web
+│   └── resume.json       # JSON Resume format
+├── sections/             # LaTeX content sections
 │   ├── summary.tex
 │   ├── projects.tex
 │   ├── open_source.tex
 │   ├── skills.tex
 │   ├── education.tex
-│   └── latest_pr.tex        # Auto-generated
-├── style/
-│   ├── header.tex           # Document setup
-│   └── macros.tex           # Custom commands
-├── scripts/                 # Python automation
-│   ├── fetch_latest_pr.py
-│   ├── generate_html.py
-│   ├── generate_json.py
-│   ├── generate_markdown.py
-│   ├── config.py           # Personal configuration
-│   └── utils.py            # Helper functions
-├── docs/                    # Generated output (deployed)
-│   ├── index.pdf           # PDF at root
-│   ├── web/
-│   │   └── index.html      # HTML version
-│   ├── resume.json
-│   └── README.md
-└── .github/workflows/
-    └── build.yml           # CI/CD automation
-```
-
-## ⚙️ Configuration
-
-Update personal info in `scripts/config.py`:
-
-```python
-PERSONAL_INFO = {
-    "name": "Abhinesh Jha",
-    "email": "jhaabhinesh977@gmail.com",
-    "github": "https://github.com/Abhineshhh",
-    "linkedin": "https://linkedin.com/in/abhineshjha",
-    "website": "https://abhineshhh.me"
-}
-
-GITHUB_USERNAME = "Abhineshhh"
-```
-
-Update header info in `style/header.tex` for the PDF version.
-
-## 🔄 Auto-Update Schedule
-
-The workflow automatically fetches your latest GitHub PR:
-- **Scheduled**: Every Sunday at midnight UTC
-- **Manual**: Click "Run workflow" in GitHub Actions tab
-- **On push**: Automatically when you update any file
-
-## 🛠️ Tech Stack
-
-- **LaTeX** - Document typesetting
-- **Python** - Build automation and format generation
-- **GitHub Actions** - CI/CD pipeline
-- **GitHub Pages** - Static hosting
-
-## 📄 License
-
-Feel free to fork and customize for your own resume!
-
----
-
-**Built with ❤️ using LaTeX, Python, and GitHub Actions**
-```
-├── style/                # theme & formatting
+│   └── latest_pr.tex     # Auto-generated from GitHub
+├── style/                # LaTeX styling
 │   ├── header.tex
 │   └── macros.tex
-│
-├── scripts/              # automation scripts
-│   ├── fetch_latest_pr.py     # fetches latest merged PR
-│   ├── generate_html.py       # LaTeX → HTML
-│   ├── generate_json.py       # LaTeX → JSON Resume
-│   └── generate_markdown.py   # LaTeX → Markdown
-│
-├── docs/                 # generated files (GitHub Pages)
-│   ├── index.pdf        # PDF at root URL
-│   ├── web/
-│   │   └── index.html   # HTML version at /web/
-│   ├── resume.json      # JSON Resume format
-│   └── README.md        # Markdown version
-│
-├── Makefile              # for local build
-├── .github/
-│   └── workflows/
-│       └── build.yml     # CI/CD pipeline
-│
-└── README.md
+├── scripts/              # Python automation scripts
+│   ├── config.py         # Configuration
+│   ├── utils.py          # Utility functions
+│   ├── fetch_latest_pr.py
+│   └── generate_json.py
+└── tests/                # Test suite
+    ├── __init__.py
+    └── test_utils.py
 ```
 
-## 🚀 Quick Start
+## 🔧 Customization
 
-#### Prerequisites
+### Edit Resume Sections
 
-**1. Python 3.x**
-```powershell
-python --version
-pip install requests
-```
+Edit the `.tex` files in the `sections/` directory:
 
-**2. TeX Distribution** (for PDF generation)
-
-### Option A: MiKTeX (recommended for Windows)
-
-**Using Chocolatey (easiest):**
-
-1. Open PowerShell as Administrator
-2. Install MiKTeX:
-
-```powershell
-choco install miktex
-```
-
-3. **IMPORTANT:** Close PowerShell completely and open a new window
-   - The PATH won't update in the current terminal session
-   - MiKTeX binaries are added to PATH during installation
-   - New terminal = fresh PATH with MiKTeX included
-4. Verify installation:
-
-```powershell
-pdflatex --version
-latexmk --version
-```
-
-**Manual installation:**
-
-1. Download MiKTeX installer from [miktex.org](https://miktex.org/download)
-2. Run installer and follow prompts (use defaults)
-3. After installation, restart your terminal
-4. Verify installation as above
-
-### Option B: TeX Live
-
-1. Download TeX Live installer from [tug.org/texlive](https://tug.org/texlive/acquire-netinstall.html)
-2. Run `install-tl-windows.exe`
-3. Follow installation wizard (basic scheme is sufficient)
-4. Add TeX Live bin directory to PATH if not automatic
-5. Restart terminal and verify
-
----
-
-## 📦 Build Commands
-
-### Build PDF Only
-```powershell
-make build
-# OR
-python scripts\fetch_latest_pr.py
-latexmk -pdf -interaction=nonstopmode cv.tex
-```
-
-### Build All Formats (PDF + HTML + JSON + Markdown)
-```powershell
-make all-formats
-```
-
-This generates:
-- `cv.pdf` - LaTeX-compiled PDF (source)
-- `docs/index.pdf` - PDF for root URL
-- `docs/web/index.html` - HTML version at /web/
-- `docs/resume.json` - JSON Resume format
-- `docs/README.md` - Markdown version
-
-### Preview HTML Resume Locally
-```powershell
-make serve
-```
-
-Then open `http://localhost:8000/docs/` in your browser.
-
-### Clean Build Artifacts
-```powershell
-make clean
-```
-
----
-
-## 🌐 GitHub Pages Deployment
-
-Your resume will be automatically deployed to GitHub Pages on every push to `main` or `master`.
-
-### Setup Steps:
-
-1. **Enable GitHub Pages** in your repository:
-   - Go to Settings → Pages
-   - Source: Deploy from a branch
-   - Branch: `gh-pages` / `(root)`
-   - Save
-
-2. **Update Personal Info**:
-   - Edit `scripts/generate_html.py` (lines 12-17)
-   - Edit `scripts/generate_json.py` (lines 13-18)
-   - Edit `scripts/generate_markdown.py` (lines 12-17)
-   - Replace placeholder values with your actual info
-
-3. **Push to GitHub**:
-   ```powershell
-   git add .
-   git commit -m "Enable multi-format resume generation"
-   git push origin main
-   ```
-
-4. **Access Your Resume**:
-   - **PDF (Main)**: `https://yourusername.github.io/resume-latex/` → Direct PDF
-   - **HTML Version**: `https://yourusername.github.io/resume-latex/web/`
-   - **JSON Resume**: `https://yourusername.github.io/resume-latex/resume.json`
-
----
-
-## ⚙️ Configuration
-
-### Dynamic Latest PR Feature
-
-Edit `scripts/fetch_latest_pr.py` line 12:
-```python
-GITHUB_USERNAME = "Abhineshhh"  # Replace with YOUR GitHub username
-```
-
-### Personal Information
-
-Update these files with your actual info:
-- `style/header.tex` - Name, contact links
-- `scripts/generate_html.py` - HTML generator config
-- `scripts/generate_json.py` - JSON Resume data
-- `scripts/generate_markdown.py` - Markdown generator config
-
-### Content Sections
-
-Edit files in `sections/`:
 - `summary.tex` - Professional summary
-- `projects.tex` - Your projects
-- `open_source.tex` - Open-source contributions
-- `education.tex` - Education history
+- `projects.tex` - Project entries
+- `open_source.tex` - Open source contributions
 - `skills.tex` - Technical skills
+- `education.tex` - Education details
 
----
+### Add/Remove Sections
 
-## 🔄 How It Works
+Edit `cv.tex` to include/exclude sections:
 
-1. **On every push**, GitHub Actions:
-   - Fetches your latest merged PR
-   - Compiles LaTeX → PDF
-   - Generates HTML version
-   - Creates JSON Resume
-   - Builds Markdown format
-   - Deploys everything to GitHub Pages
+```latex
+\input{sections/summary.tex}
+\input{sections/projects.tex}
+% \input{sections/new_section.tex}  % Add new sections
+```
 
-2. **Dynamic PR Integration**:
-   - Script queries GitHub API for your latest merged PR
-   - Generates `sections/latest_pr.tex`
-   - Automatically included in all formats
+### Modify Styling
 
-3. **Multi-Format Pipeline**:
-   ```
-   LaTeX Source → PDF (latexmk)
-                ↓
-   Python Scripts → HTML + JSON + Markdown
-                ↓
-   GitHub Pages → Live Website
-   ```
+Edit files in the `style/` directory:
 
----
+- `header.tex` - Header and document setup
+- `macros.tex` - Custom LaTeX commands
 
-## 📋 Features Included
+## 🚀 Deployment (Vercel)
 
-✅ Modular LaTeX structure (easy to edit)  
-✅ Dynamic latest PR integration  
-✅ Multi-format output (PDF, HTML, JSON, Markdown)  
-✅ Responsive HTML design  
-✅ JSON Resume schema compliance  
-✅ GitHub Actions CI/CD  
-✅ GitHub Pages deployment  
-✅ Local development server  
-✅ One-command builds  
+### Setup
 
----
+1. Push your repository to GitHub
+2. Connect your repo to Vercel
+3. Configure custom domain in Vercel dashboard (if needed)
+
+### Automatic Deployment
+
+The GitHub Actions workflow automatically:
+1. Runs tests
+2. Fetches latest PR
+3. Compiles PDF
+4. Generates JSON Resume
+5. Commits to `docs/` folder
+
+Vercel auto-deploys when changes are pushed to main branch.
+
+### Manual Deployment
+
+You can also deploy directly from Vercel dashboard or CLI:
+
+```bash
+vercel deploy
+```
+
+## 🧪 Testing
+
+Run the comprehensive test suite:
+
+```bash
+# Run all tests
+python tests/test_utils.py
+
+# Tests include:
+# - LaTeX parsing
+# - Brace matching
+# - Argument extraction
+# - URL/email validation
+# - File operations
+# - Configuration validation
+```
+
+## 🔐 GitHub Token (Optional)
+
+For higher API rate limits when fetching PRs:
+
+### Linux/macOS
+```bash
+export GITHUB_TOKEN="your_github_token"
+```
+
+### Windows PowerShell
+```powershell
+$env:GITHUB_TOKEN="your_github_token"
+```
+
+### GitHub Actions
+Already configured - uses `${{ secrets.GITHUB_TOKEN }}` automatically.
+
+## 📊 Output Formats
+
+### PDF Resume (`cv.pdf`)
+Professional LaTeX-compiled PDF resume.
+
+### JSON Resume (`docs/resume.json`)
+Follows JSON Resume Schema v1.0.0:
+- https://jsonresume.org/schema/
+- Compatible with JSON Resume tools and themes
+- Machine-readable for ATS systems
+
+## 🛡️ Error Handling
+
+The scripts include comprehensive error handling:
+- Retry logic for API calls
+- Fallback text if GitHub API fails
+- Safe file operations with validation
+- LaTeX character escaping
+- Type checking with Pyright
 
 ## 🤝 Contributing
 
-Feel free to fork this repository and customize it for your own resume!
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests: `python tests/test_utils.py`
+5. Submit a pull request
 
-## 📄 License
+## 📝 License
 
-MIT License - feel free to use this template for your own resume.
+This project is open source and available for personal and commercial use.
+
+## 🐛 Troubleshooting
+
+### "GITHUB_TOKEN not found"
+This is just a warning. Scripts will work but with lower API rate limits (60 req/hour instead of 5000).
+
+### "latest_pr.tex not found"
+Run `python scripts/fetch_latest_pr.py` first, or the Makefile will auto-create it.
+
+### LaTeX compilation errors
+Ensure you have a complete LaTeX distribution installed with required packages.
+
+### Windows Makefile issues
+Use PowerShell commands directly or install WSL/Make for Windows.
+
+## 📧 Contact
+
+- GitHub: [@Abhineshhh](https://github.com/Abhineshhh)
+- LinkedIn: [abhineshjha](https://linkedin.com/in/abhineshjha)
+- Portfolio: [abhineshhh.me](https://abhineshhh.me)
 
 ---
 
-*Last updated: Auto-generated on every build via GitHub Actions*
+**Built with ❤️ using LaTeX, Python, and automation**

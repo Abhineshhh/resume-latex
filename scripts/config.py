@@ -30,9 +30,7 @@ DOCS_DIR = "docs"
 
 # Output Files
 OUTPUT_FILES = {
-    "html": "docs/web/index.html",
     "json": "docs/resume.json",
-    "markdown": "docs/README.md",
     "latest_pr": "sections/latest_pr.tex"
 }
 
@@ -42,6 +40,37 @@ SUMMARY_TEXT = "Backend developer specializing in Java and Spring Boot with expe
 
 # Fallback text for latest PR (if API fails)
 FALLBACK_PR_TEXT = r"\item \textbf{Active Contributor:} Ongoing contributions to open-source projects."
+
+# Open Source Contributions - used by JSON Resume generator
+OPEN_SOURCE_CONTRIBUTIONS = [
+    {
+        "organization": "HackSquad by Novu",
+        "position": "Open Source Contributor",
+        "url": "https://github.com/novuhq/novu",
+        "startDate": "2024",
+        "endDate": "2024",
+        "summary": "Winner of HackSquad open-source program. Developed new features and improved code quality through testing and documentation.",
+        "highlights": []
+    },
+    {
+        "organization": "Social Summer of Code",
+        "position": "Open Source Contributor",
+        "url": "",
+        "startDate": "2024",
+        "endDate": "2024",
+        "summary": "Winner of Social Summer of Code. Enhanced frontend UX and modularized Python programs.",
+        "highlights": []
+    },
+    {
+        "organization": "Innogeeks Winter of Code",
+        "position": "Open Source Contributor",
+        "url": "",
+        "startDate": "2023",
+        "endDate": "2023",
+        "summary": "Winner of Innogeeks Winter of Code. Implemented features and resolved bugs in web applications.",
+        "highlights": []
+    }
+]
 
 # API Configuration
 GITHUB_API_TIMEOUT = 10  # seconds

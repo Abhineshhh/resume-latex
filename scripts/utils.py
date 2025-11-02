@@ -77,7 +77,7 @@ def write_file_safe(filepath: str, content: str, encoding: str = 'utf-8') -> boo
 def find_matching_brace(text: str, start_pos: int) -> int:
     """
     Find the position of the matching closing brace.
-    Handles nested braces properly.
+    Handles nested braces and escaped characters properly.
     
     Args:
         text: The text to search in
@@ -86,18 +86,34 @@ def find_matching_brace(text: str, start_pos: int) -> int:
     Returns:
         Position of matching closing brace, or -1 if not found
     """
+    if not text or start_pos >= len(text):
+        return -1
+    
     count = 1
     pos = start_pos
+    
     while pos < len(text) and count > 0:
-        if pos > 0 and text[pos - 1] == '\\':
-            # Skip escaped characters
-            pos += 1
-            continue
-        if text[pos] == '{':
-            count += 1
-        elif text[pos] == '}':
-            count -= 1
+        char = text[pos]
+        
+        # Count consecutive backslashes before current position
+        num_backslashes = 0
+        temp_pos = pos - 1
+        while temp_pos >= 0 and text[temp_pos] == '\\':
+            num_backslashes += 1
+            temp_pos -= 1
+        
+        # Character is escaped only if preceded by odd number of backslashes
+        is_escaped = (num_backslashes % 2 == 1)
+        
+        # Check braces only if not escaped
+        if not is_escaped:
+            if char == '{':
+                count += 1
+            elif char == '}':
+                count -= 1
+        
         pos += 1
+    
     return pos if count == 0 else -1
 
 
@@ -113,22 +129,30 @@ def extract_latex_args(text: str, start: int, num_args: int) -> Tuple[Optional[L
     Returns:
         Tuple of (list of arguments, end position) or (None, start) if failed
     """
+    if not text or start >= len(text) or num_args <= 0:
+        logger.warning(f"Invalid arguments for extract_latex_args: text_len={len(text) if text else 0}, start={start}, num_args={num_args}")
+        return None, start
+    
     args = []
     pos = start
     
-    for _ in range(num_args):
+    for arg_num in range(1, num_args + 1):
         # Skip whitespace
         while pos < len(text) and text[pos] in ' \n\t':
             pos += 1
         
-        if pos >= len(text) or text[pos] != '{':
-            logger.warning(f"Failed to extract LaTeX arg at position {pos}")
+        if pos >= len(text):
+            logger.warning(f"Unexpected end of text while extracting argument {arg_num}/{num_args}")
+            return None, start
+        
+        if text[pos] != '{':
+            logger.warning(f"Expected '{{' at position {pos} for argument {arg_num}/{num_args}, found '{text[pos]}'")
             return None, start
         
         # Find matching brace
         end = find_matching_brace(text, pos + 1)
         if end == -1:
-            logger.warning(f"Unmatched brace at position {pos}")
+            logger.warning(f"Unmatched brace at position {pos} for argument {arg_num}/{num_args}")
             return None, start
         
         args.append(text[pos + 1:end - 1])
@@ -191,19 +215,30 @@ def parse_cventry(text: str) -> List[Dict[str, str]]:
     """
     Parse all \\cventry commands from LaTeX text.
     
+    Args:
+        text: LaTeX content containing cventry commands
+    
     Returns:
-        List of dicts with keys: title, tech, link, content
+        List of dicts with keys: title, tech, link_url, link_text, content
     """
+    if not text:
+        logger.warning("Empty text provided to parse_cventry")
+        return []
+    
     entries = []
     pos = 0
+    entry_num = 0
     
     while True:
         match = re.search(r'\\cventry', text[pos:])
         if not match:
             break
         
+        entry_num += 1
+        match_pos = pos + match.end()
+        
         # Extract 4 arguments
-        args, end_pos = extract_latex_args(text, pos + match.end(), 4)
+        args, end_pos = extract_latex_args(text, match_pos, 4)
         
         if args and len(args) == 4:
             title, tech, link_content, content = args
@@ -218,18 +253,20 @@ def parse_cventry(text: str) -> List[Dict[str, str]]:
                 link_text = link_content
             
             entries.append({
-                'title': title,
-                'tech': tech,
-                'link_url': url,
-                'link_text': link_text,
-                'content': content
+                'title': title.strip(),
+                'tech': tech.strip(),
+                'link_url': url.strip(),
+                'link_text': link_text.strip(),
+                'content': content.strip()
             })
             pos = end_pos
+            logger.debug(f"Successfully parsed cventry #{entry_num}: {title}")
         else:
             # Failed to parse, skip this occurrence
-            pos += match.end()
+            logger.warning(f"Failed to parse cventry #{entry_num} at position {match_pos}")
+            pos = match_pos + 1
     
-    logger.debug(f"Parsed {len(entries)} cventry commands")
+    logger.info(f"Parsed {len(entries)} cventry commands successfully")
     return entries
 
 
@@ -271,7 +308,7 @@ class LatexParser:
         return self.errors
 
 
-def format_file_size(size_bytes: int) -> str:
+def format_file_size(size_bytes: float) -> str:
     """Format file size in human-readable format."""
     for unit in ['B', 'KB', 'MB', 'GB']:
         if size_bytes < 1024.0:

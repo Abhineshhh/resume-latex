@@ -32,6 +32,13 @@ build/
 # Auto-generated PR info
 sections/latest_pr.tex
 
+# Backup files
+*.backup
+generate_*.py.backup
+
+# Duplicate/temp directories
+scripts/docs/
+
 # OS files
 .DS_Store
 Thumbs.db

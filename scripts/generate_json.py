@@ -2,15 +2,14 @@
 """
 Generate JSON Resume from LaTeX sections.
 Follows JSON Resume Schema: https://jsonresume.org/schema/
-Parses data from LaTeX files instead of hardcoding.
+Parses data from LaTeX files and config.
 """
 
 import json
 import os
-from datetime import datetime
 
 # Import configuration and utilities
-from config import PERSONAL_INFO, OUTPUT_FILES, SECTIONS_DIR
+from config import PERSONAL_INFO, OUTPUT_FILES, SECTIONS_DIR, OPEN_SOURCE_CONTRIBUTIONS
 from utils import (
     logger, read_file_safe, write_file_safe,
     parse_cventry, clean_latex_to_plain, get_summary_text
@@ -59,44 +58,12 @@ def parse_projects_from_latex():
     return projects
 
 
-def parse_open_source_from_latex():
-    """Parse open source contributions from open_source.tex file."""
-    # Return hardcoded structured data for JSON Resume format
+def parse_open_source_from_config():
+    """Get open source contributions from config.py."""
+    # Return structured data from config for JSON Resume format
     # Note: The actual LaTeX file uses a different format (paragraph + latest PR)
     # This structured data is specifically for JSON Resume schema compliance
-    volunteer = [
-        {
-            "organization": "HackSquad by Novu",
-            "position": "Open Source Contributor",
-            "url": "https://github.com/novuhq/novu",
-            "startDate": "2024",
-            "endDate": "2024",
-            "summary": "Winner of HackSquad open-source program. Developed new features and improved code quality through testing and documentation.",
-            "highlights": []
-        },
-        {
-            "organization": "Social Summer of Code",
-            "position": "Open Source Contributor",
-            "url": "",
-            "startDate": "2024",
-            "endDate": "2024",
-            "summary": "Winner of Social Summer of Code. Enhanced frontend UX and modularized Python programs.",
-            "highlights": []
-        },
-        {
-            "organization": "Innogeeks Winter of Code",
-            "position": "Open Source Contributor",
-            "url": "",
-            "startDate": "2023",
-            "endDate": "2023",
-            "summary": "Winner of Innogeeks Winter of Code. Implemented features and resolved bugs in web applications.",
-            "highlights": []
-        }
-    ]
-    
-    return volunteer
-    
-    return volunteer
+    return OPEN_SOURCE_CONTRIBUTIONS
 
 
 def generate_json_resume():
@@ -106,7 +73,7 @@ def generate_json_resume():
     
     # Parse projects from LaTeX
     projects = parse_projects_from_latex()
-    volunteer = parse_open_source_from_latex()
+    volunteer = parse_open_source_from_config()
     
     # Get summary from summary.tex
     summary_text = get_summary_text()

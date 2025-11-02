@@ -1,4 +1,4 @@
-name: Build CV and Deploy to GitHub Pages
+name: Build CV and Deploy
 
 on:
   push:
@@ -13,67 +13,74 @@ jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Required for GitHub Pages deployment
+      contents: write  # Required to commit built files back to repo
     
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
-          cache: 'pip'  # Enable pip caching
+          python-version: '3.12'
+          cache: 'pip'
 
       - name: Install Python dependencies
         run: pip install requests
 
       - name: Run tests
-        run: |
-          cd scripts
-          python ../tests/test_utils.py
+        run: python tests/test_utils.py
+        continue-on-error: false
 
       - name: Fetch latest merged PR
-        run: cd scripts && python fetch_latest_pr.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/fetch_latest_pr.py
 
       - name: Compile LaTeX to PDF
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: cv.tex
-
-      - name: Create web directory
-        run: mkdir -p docs/web
-
-      - name: Generate HTML resume
-        run: cd scripts && python generate_html.py
+          latexmk_use_xelatex: false
+          latexmk_shell_escape: false
 
       - name: Generate JSON Resume
-        run: cd scripts && python generate_json.py
+        run: python scripts/generate_json.py
 
-      - name: Generate Markdown resume
-        run: cd scripts && python generate_markdown.py
+      - name: Prepare docs folder for Vercel
+        run: |
+          mkdir -p docs
+          cp cv.pdf docs/index.pdf
 
-      - name: Copy PDF to docs folder as index.pdf
-        run: cp cv.pdf docs/index.pdf
-
-      - name: Copy CNAME for custom domain
-        run: echo "resume.abhineshhh.me" > docs/CNAME
+      - name: Verify generated files
+        run: |
+          echo "Verifying generated files..."
+          ls -lh cv.pdf docs/index.pdf docs/resume.json
+          echo "✓ All files generated successfully"
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
         with:
           name: cv-pdf
           path: cv.pdf
+          retention-days: 90
 
       - name: Upload all formats artifact
         uses: actions/upload-artifact@v4
         with:
           name: resume-all-formats
           path: docs/
+          retention-days: 90
       
       - name: Commit and push built files
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update resume files [skip ci]" && git push)
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: auto-update resume files [skip ci]"
+            git push
+          fi
