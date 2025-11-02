@@ -30,10 +30,10 @@ dist/
 build/
 
 # Generated files (these are built by CI/local scripts)
-docs/index.html
+docs/web/index.html
 docs/resume.json
 docs/README.md
-docs/cv.pdf
+docs/index.pdf
 
 # Auto-generated PR info
 sections/latest_pr.tex

@@ -13,11 +13,11 @@ build: fetch-pr
 
 all-formats: build
 	@echo "Generating all resume formats..."
+	@$(PYTHON) -c "import os; os.makedirs('docs/web', exist_ok=True)"
 	$(PYTHON) scripts/generate_html.py
 	$(PYTHON) scripts/generate_json.py
 	$(PYTHON) scripts/generate_markdown.py
-	@$(PYTHON) -c "import os; os.makedirs('docs', exist_ok=True)"
-	@$(PYTHON) -c "import shutil; shutil.copy('cv.pdf', 'docs/cv.pdf')"
+	@$(PYTHON) -c "import shutil; shutil.copy('cv.pdf', 'docs/index.pdf')"
 	@echo "✓ All formats generated in docs/ folder"
 
 serve: all-formats

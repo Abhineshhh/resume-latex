@@ -30,7 +30,7 @@ DOCS_DIR = "docs"
 
 # Output Files
 OUTPUT_FILES = {
-    "html": "docs/index.html",
+    "html": "docs/web/index.html",
     "json": "docs/resume.json",
     "markdown": "docs/README.md",
     "latest_pr": "sections/latest_pr.tex"

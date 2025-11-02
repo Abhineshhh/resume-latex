@@ -6,7 +6,7 @@
 
 - **Multi-format output**: PDF, HTML, JSON Resume, Markdown
 - **Auto-updates**: Fetches latest merged PR from GitHub weekly
-- **GitHub Pages**: Deployed automatically at `https://abhineshhh.github.io/resume-latex/`
+- **GitHub Pages**: Deployed automatically at `https://resume.abhineshhh.me/`
 - **Modular structure**: Easy to customize sections
 - **CI/CD**: Builds and deploys on every push
 
@@ -57,9 +57,10 @@ GitHub Actions automatically:
 
 After deployment, your resume will be available at:
 
-- **Live website**: `https://abhineshhh.github.io/resume-latex/`
-- **PDF download**: `https://abhineshhh.github.io/resume-latex/cv.pdf`
-- **JSON Resume**: `https://abhineshhh.github.io/resume-latex/resume.json`
+- **PDF (Main)**: `https://resume.abhineshhh.me/` → Direct PDF view
+- **HTML Version**: `https://resume.abhineshhh.me/web/` → Interactive HTML
+- **JSON Resume**: `https://resume.abhineshhh.me/resume.json` → JSON Resume schema
+- **Markdown**: `https://resume.abhineshhh.me/README.md` → GitHub-style markdown
 
 ## 📂 Structure
 
@@ -84,10 +85,11 @@ resume-latex/
 │   ├── config.py           # Personal configuration
 │   └── utils.py            # Helper functions
 ├── docs/                    # Generated output (deployed)
-│   ├── index.html
+│   ├── index.pdf           # PDF at root
+│   ├── web/
+│   │   └── index.html      # HTML version
 │   ├── resume.json
-│   ├── README.md
-│   └── cv.pdf
+│   └── README.md
 └── .github/workflows/
     └── build.yml           # CI/CD automation
 ```
@@ -131,7 +133,7 @@ Feel free to fork and customize for your own resume!
 ---
 
 **Built with ❤️ using LaTeX, Python, and GitHub Actions**
-
+```
 ├── style/                # theme & formatting
 │   ├── header.tex
 │   └── macros.tex
@@ -143,10 +145,11 @@ Feel free to fork and customize for your own resume!
 │   └── generate_markdown.py   # LaTeX → Markdown
 │
 ├── docs/                 # generated files (GitHub Pages)
-│   ├── index.html       # web version
+│   ├── index.pdf        # PDF at root URL
+│   ├── web/
+│   │   └── index.html   # HTML version at /web/
 │   ├── resume.json      # JSON Resume format
-│   ├── README.md        # Markdown version
-│   └── cv.pdf           # PDF copy
+│   └── README.md        # Markdown version
 │
 ├── Makefile              # for local build
 ├── .github/
@@ -223,11 +226,11 @@ make all-formats
 ```
 
 This generates:
-- `cv.pdf` - LaTeX-compiled PDF
-- `docs/index.html` - Responsive HTML website
+- `cv.pdf` - LaTeX-compiled PDF (source)
+- `docs/index.pdf` - PDF for root URL
+- `docs/web/index.html` - HTML version at /web/
 - `docs/resume.json` - JSON Resume format
 - `docs/README.md` - Markdown version
-- `docs/cv.pdf` - PDF copy for web download
 
 ### Preview HTML Resume Locally
 ```powershell
@@ -269,8 +272,8 @@ Your resume will be automatically deployed to GitHub Pages on every push to `mai
    ```
 
 4. **Access Your Resume**:
-   - **Live Website**: `https://yourusername.github.io/resume-latex/`
-   - **PDF Download**: `https://yourusername.github.io/resume-latex/cv.pdf`
+   - **PDF (Main)**: `https://yourusername.github.io/resume-latex/` → Direct PDF
+   - **HTML Version**: `https://yourusername.github.io/resume-latex/web/`
    - **JSON Resume**: `https://yourusername.github.io/resume-latex/resume.json`
 
 ---

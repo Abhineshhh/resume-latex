@@ -40,6 +40,9 @@ jobs:
         with:
           root_file: cv.tex
 
+      - name: Create web directory
+        run: mkdir -p docs/web
+
       - name: Generate HTML resume
         run: cd scripts && python generate_html.py
 
@@ -49,8 +52,11 @@ jobs:
       - name: Generate Markdown resume
         run: cd scripts && python generate_markdown.py
 
-      - name: Copy PDF to docs folder
-        run: cp cv.pdf docs/cv.pdf
+      - name: Copy PDF to docs folder as index.pdf
+        run: cp cv.pdf docs/index.pdf
+
+      - name: Copy CNAME for custom domain
+        run: echo "resume.abhineshhh.me" > docs/CNAME
 
       - name: Upload PDF artifact
         uses: actions/upload-artifact@v4
@@ -63,13 +69,6 @@ jobs:
         with:
           name: resume-all-formats
           path: docs/
-
-      - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
-          publish_branch: gh-pages
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
+      
+      # Vercel will deploy the docs/ folder automatically
+      # No GitHub Pages deployment needed
