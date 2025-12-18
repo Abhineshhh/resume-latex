@@ -185,8 +185,17 @@ def clean_latex_to_plain(text: str) -> str:
     Convert LaTeX to plain text by removing/converting commands.
     Basic version - doesn't handle complex structures.
     """
-    # Remove comments
-    text = re.sub(r'%.*', '', text)
+    # Remove comments (but preserve escaped percent signs first)
+    text = re.sub(r'(?<!\\)%.*', '', text)
+    
+    # Convert escaped LaTeX special characters to plain text
+    text = re.sub(r'\\%', '%', text)
+    text = re.sub(r'\\&', '&', text)
+    text = re.sub(r'\\_', '_', text)
+    text = re.sub(r'\\#', '#', text)
+    text = re.sub(r'\\\$', '$', text)
+    text = re.sub(r'\\\{', '{', text)
+    text = re.sub(r'\\\}', '}', text)
     
     # Convert common commands
     text = re.sub(r'\\textbf\{([^}]+)\}', r'\1', text)
@@ -333,6 +342,41 @@ def get_file_info(filepath: str) -> Optional[Dict[str, Any]]:
     except Exception as e:
         logger.error(f"Error getting file info for {filepath}: {e}")
         return None
+
+
+def parse_skills_from_latex() -> List[Dict[str, Any]]:
+    """
+    Parse skills from sections/skills.tex.
+    Returns structured skills data for JSON Resume.
+    """
+    from config import SECTIONS_DIR
+    
+    filepath = os.path.join(SECTIONS_DIR, "skills.tex")
+    content = read_file_safe(filepath)
+    
+    if not content:
+        logger.warning(f"Could not read {filepath}")
+        return []
+    
+    skills = []
+    
+    # Parse each skill category line by line
+    # Format: \noindent\textbf{Category:} item1, item2, item3
+    pattern = r'\\noindent\\textbf\{([^:]+):\}\s*([^\\\n]+)'
+    matches = re.findall(pattern, content)
+    
+    for category, items_str in matches:
+        # Clean LaTeX commands from category name
+        category = clean_latex_to_plain(category).strip()
+        items = [item.strip() for item in items_str.split(',')]
+        skills.append({
+            "name": category,
+            "level": "",
+            "keywords": items
+        })
+    
+    logger.debug(f"Parsed {len(skills)} skill categories from {filepath}")
+    return skills
 
 
 def get_summary_text() -> str:

@@ -12,7 +12,7 @@ import os
 from config import PERSONAL_INFO, OUTPUT_FILES, SECTIONS_DIR, OPEN_SOURCE_CONTRIBUTIONS
 from utils import (
     logger, read_file_safe, write_file_safe,
-    parse_cventry, clean_latex_to_plain, get_summary_text
+    parse_cventry, clean_latex_to_plain, get_summary_text, parse_skills_from_latex
 )
 
 OUTPUT_FILE = OUTPUT_FILES['json']
@@ -41,10 +41,13 @@ def parse_projects_from_latex():
         # Extract tech keywords
         tech_keywords = [t.strip() for t in entry['tech'].split(',')]
         
+        # Use first highlight as description but don't duplicate in highlights
+        description = highlights[0] if highlights else entry['title']
+        
         project = {
             "name": entry['title'],
-            "description": highlights[0] if highlights else entry['title'],
-            "highlights": highlights,
+            "description": description,
+            "highlights": highlights[1:] if len(highlights) > 1 else highlights,
             "keywords": tech_keywords,
             "startDate": "",
             "endDate": "",
@@ -71,12 +74,27 @@ def generate_json_resume():
     
     logger.info("Generating JSON resume...")
     
-    # Parse projects from LaTeX
-    projects = parse_projects_from_latex()
-    volunteer = parse_open_source_from_config()
-    
-    # Get summary from summary.tex
-    summary_text = get_summary_text()
+    try:
+        # Parse projects from LaTeX
+        projects = parse_projects_from_latex()
+        volunteer = parse_open_source_from_config()
+        
+        # Get summary from summary.tex
+        summary_text = get_summary_text()
+        
+        # Parse skills from skills.tex
+        skills = parse_skills_from_latex()
+        if not skills:
+            logger.warning("No skills parsed, using fallback")
+            skills = [
+                {"name": "Languages", "level": "", "keywords": ["Java", "Python", "C", "C++", "SQL", "JavaScript"]},
+                {"name": "Frameworks & Libraries", "level": "", "keywords": ["Spring Boot", "Spring MVC", "Spring Data JPA", "Spring Security", "Hibernate", "Maven"]},
+                {"name": "Databases", "level": "", "keywords": ["MySQL", "PostgreSQL", "MongoDB"]},
+                {"name": "Tools & Technologies", "level": "", "keywords": ["Git", "Docker", "Postman", "Linux", "Swagger"]}
+            ]
+    except Exception as e:
+        logger.error(f"Error during data parsing: {e}")
+        return None
     
     # Build resume data
     resume_data = {
@@ -116,8 +134,8 @@ def generate_json_resume():
                 "url": "",
                 "area": "Computer Science",
                 "studyType": "B.Tech",
-                "startDate": "",
-                "endDate": "",
+                "startDate": "2022",
+                "endDate": "2026",
                 "score": "8.2/10 CGPA",
                 "courses": [
                     "Operating Systems",
@@ -131,28 +149,7 @@ def generate_json_resume():
         "awards": [],
         "certificates": [],
         "publications": [],
-        "skills": [
-            {
-                "name": "Languages",
-                "level": "",
-                "keywords": ["Java", "C", "C++", "Python", "SQL", "JavaScript"]
-            },
-            {
-                "name": "Frameworks & Libraries",
-                "level": "",
-                "keywords": ["Spring Boot", "Spring MVC", "Spring Data JPA", "Spring Security", "Hibernate", "Maven"]
-            },
-            {
-                "name": "Databases",
-                "level": "",
-                "keywords": ["MySQL", "PostgreSQL", "MongoDB"]
-            },
-            {
-                "name": "Tools & Technologies",
-                "level": "",
-                "keywords": ["Git", "Docker", "Postman", "Linux", "Swagger", "Firebase"]
-            }
-        ],
+        "skills": skills,
         "languages": [
             {
                 "language": "English",
@@ -165,14 +162,20 @@ def generate_json_resume():
     }
     
     # Write JSON file
-    success = write_file_safe(OUTPUT_FILE, json.dumps(resume_data, indent=2, ensure_ascii=False))
-    
-    if success:
-        logger.info(f"JSON resume generated successfully")
-        logger.info(f"  Projects parsed: {len(projects)}")
-        logger.info(f"  Validate at: https://jsonresume.org/schema/")
-    else:
-        logger.error("Failed to generate JSON resume")
+    try:
+        json_content = json.dumps(resume_data, indent=2, ensure_ascii=False)
+        success = write_file_safe(OUTPUT_FILE, json_content)
+        
+        if success:
+            logger.info(f"JSON resume generated successfully")
+            logger.info(f"  Projects parsed: {len(projects)}")
+            logger.info(f"  Skills categories: {len(skills)}")
+            logger.info(f"  Validate at: https://jsonresume.org/schema/")
+        else:
+            logger.error("Failed to write JSON resume")
+            return None
+    except (TypeError, ValueError) as e:
+        logger.error(f"JSON serialization error: {e}")
         return None
     
     return OUTPUT_FILE

@@ -5,8 +5,6 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
-  schedule:
-    - cron: '0 0 * * 0'  # Auto-run every Sunday at midnight UTC
   workflow_dispatch:  # Allow manual trigger
 
 jobs:
@@ -31,11 +29,6 @@ jobs:
       - name: Run tests
         run: python tests/test_utils.py
         continue-on-error: false
-
-      - name: Fetch latest merged PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python scripts/fetch_latest_pr.py
 
       - name: Compile LaTeX to PDF
         uses: xu-cheng/latex-action@v3

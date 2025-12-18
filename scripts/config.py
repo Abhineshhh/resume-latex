@@ -30,16 +30,12 @@ DOCS_DIR = "docs"
 
 # Output Files
 OUTPUT_FILES = {
-    "json": "docs/resume.json",
-    "latest_pr": "sections/latest_pr.tex"
+    "json": "docs/resume.json"
 }
 
 # Resume Content Summary - parsed from sections/summary.tex by utils.get_summary_text()
 # Fallback if parsing fails:
 SUMMARY_TEXT = "Backend developer specializing in Java and Spring Boot with expertise in building production-grade distributed systems."
-
-# Fallback text for latest PR (if API fails)
-FALLBACK_PR_TEXT = r"\item \textbf{Active Contributor:} Ongoing contributions to open-source projects."
 
 # Open Source Contributions - used by JSON Resume generator
 OPEN_SOURCE_CONTRIBUTIONS = [
@@ -71,7 +67,3 @@ OPEN_SOURCE_CONTRIBUTIONS = [
         "highlights": []
     }
 ]
-
-# API Configuration
-GITHUB_API_TIMEOUT = 10  # seconds
-GITHUB_API_BASE = "https://api.github.com"

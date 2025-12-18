@@ -6,7 +6,7 @@
     "email": "jhaabhinesh977@gmail.com",
     "phone": "",
     "url": "https://abhineshhh.me",
-    "summary": "Backend developer specializing in Java and Spring Boot with expertise in building production-grade distributed systems. Strong foundation in RESTful API design, database optimization, and security implementation. Experienced in network programming, concurrency patterns, transaction management, and asynchronous processing. Passionate about clean architecture, performance optimization, and solving complex technical challenges with scalable solutions.",
+    "summary": "Backend developer specializing in Java and Spring Boot with expertise in building production-grade distributed systems. Strong foundation in RESTful API design, database optimization, and security implementation. Experienced in network programming, concurrency patterns, transaction management, and asynchronous processing. Passionate about performance optimization and solving complex technical challenges with scalable solutions.",
     "location": {
       "address": "",
       "postalCode": "",
@@ -63,8 +63,8 @@
       "url": "",
       "area": "Computer Science",
       "studyType": "B.Tech",
-      "startDate": "",
-      "endDate": "",
+      "startDate": "2022",
+      "endDate": "2026",
       "score": "8.2/10 CGPA",
       "courses": [
         "Operating Systems",
@@ -84,15 +84,16 @@
       "level": "",
       "keywords": [
         "Java",
+        "Python",
         "C",
         "C++",
-        "Python",
         "SQL",
-        "JavaScript"
+        "JavaScript",
+        "Kotlin"
       ]
     },
     {
-      "name": "Frameworks & Libraries",
+      "name": "Backend & Frameworks",
       "level": "",
       "keywords": [
         "Spring Boot",
@@ -100,7 +101,8 @@
         "Spring Data JPA",
         "Spring Security",
         "Hibernate",
-        "Maven"
+        "Maven",
+        "RESTful APIs"
       ]
     },
     {
@@ -109,19 +111,20 @@
       "keywords": [
         "MySQL",
         "PostgreSQL",
-        "MongoDB"
+        "MongoDB",
+        "Redis"
       ]
     },
     {
-      "name": "Tools & Technologies",
+      "name": "DevOps & Tools",
       "level": "",
       "keywords": [
         "Git",
         "Docker",
-        "Postman",
         "Linux",
+        "Postman",
         "Swagger",
-        "Firebase"
+        "CI/CD (GitHub Actions)"
       ]
     }
   ],
@@ -138,12 +141,10 @@
       "name": "TaskManager API",
       "description": "Engineered RESTful API with CRUD operations supporting 1000+ daily tasks",
       "highlights": [
-        "Engineered RESTful API with CRUD operations supporting 1000+ daily tasks",
-        "Automated audit logging tracking 10,000+ changes for compliance",
-        "Optimized transaction management, reducing database locks by 60\\",
+        "Optimized transaction management, reducing database locks by 60%",
         "Achieved 200ms response time via JPA query optimization",
         "Ensured data integrity with transaction boundaries and persistence",
-        "Deployed containerized app with Docker, ensuring 99.9\\"
+        "Deployed containerized app with Docker, ensuring 99.9% uptime"
       ],
       "keywords": [
         "Spring Boot",
@@ -163,11 +164,10 @@
       "name": "PeerLink - Secure P2P File Sharing Platform",
       "description": "Built with socket programming to enable file sharing via sockets without cloud storage",
       "highlights": [
-        "Built with socket programming to enable file sharing via sockets without cloud storage",
         "Built P2P file transfer system supporting 500MB+ transfers",
         "7-layer security: PIN authentication, rate limiting, auto-delete",
         "Architected thread-safe system handling 50+ transfers concurrently",
-        "Built custom HTTP parser achieving 30\\",
+        "Built custom HTTP parser achieving 30% faster upload speeds",
         "Developed file validation preventing malicious uploads"
       ],
       "keywords": [

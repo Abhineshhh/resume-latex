@@ -29,9 +29,6 @@ venv/
 dist/
 build/
 
-# Auto-generated PR info
-sections/latest_pr.tex
-
 # Backup files
 *.backup
 generate_*.py.backup

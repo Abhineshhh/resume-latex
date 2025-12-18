@@ -4,9 +4,9 @@ A professional resume generation system that creates both PDF and JSON Resume fo
 
 ## 🚀 Features
 
-- **LaTeX to PDF**: Professional PDF generation using LaTeX
+- **LaTeX to PDF**: Professional PDF generation using Charter font
 - **JSON Resume**: Auto-generates JSON Resume format (jsonresume.org compatible)
-- **GitHub Integration**: Automatically fetches your latest merged PR
+- **Dynamic Parsing**: Automatically parses skills and content from LaTeX files
 - **CI/CD Ready**: GitHub Actions workflow for automated builds
 - **Vercel Deployment**: Optimized for Vercel hosting
 - **Modular Architecture**: Easy to customize sections
@@ -45,10 +45,11 @@ PERSONAL_INFO = {
     "name": "Your Name",
     "title": "Your Title",
     "email": "your.email@example.com",
+    "linkedin": "https://linkedin.com/in/yourusername",
+    "github": "https://github.com/yourusername",
+    "website": "https://yourwebsite.com",
     # ... update all fields
 }
-
-GITHUB_USERNAME = "yourusername"
 ```
 
 ## 🎯 Usage
@@ -69,9 +70,6 @@ make test
 
 # Clean generated files
 make clean
-
-# Fetch latest PR only
-make fetch-pr
 ```
 
 ### 💻 Windows Usage
@@ -82,9 +80,6 @@ make fetch-pr
 # Run tests
 python tests/test_utils.py
 
-# Fetch latest PR
-python scripts/fetch_latest_pr.py
-
 # Build PDF
 latexmk -pdf -interaction=nonstopmode cv.tex
 
@@ -92,9 +87,7 @@ latexmk -pdf -interaction=nonstopmode cv.tex
 python scripts/generate_json.py
 
 # Build everything
-python scripts/fetch_latest_pr.py
-latexmk -pdf -interaction=nonstopmode cv.tex
-python scripts/generate_json.py
+latexmk -pdf -interaction=nonstopmode cv.tex; python scripts/generate_json.py
 ```
 
 **Option 2: Use WSL (Windows Subsystem for Linux)**
@@ -115,7 +108,6 @@ latexmk -c
 
 # Remove generated files
 Remove-Item cv.pdf -ErrorAction SilentlyContinue
-Remove-Item sections/latest_pr.tex -ErrorAction SilentlyContinue
 Remove-Item docs/*.json -ErrorAction SilentlyContinue
 Remove-Item docs/*.pdf -ErrorAction SilentlyContinue
 ```
@@ -139,15 +131,13 @@ resume-latex/
 │   ├── projects.tex
 │   ├── open_source.tex
 │   ├── skills.tex
-│   ├── education.tex
-│   └── latest_pr.tex     # Auto-generated from GitHub
+│   └── education.tex
 ├── style/                # LaTeX styling
 │   ├── header.tex
 │   └── macros.tex
 ├── scripts/              # Python automation scripts
 │   ├── config.py         # Configuration
 │   ├── utils.py          # Utility functions
-│   ├── fetch_latest_pr.py
 │   └── generate_json.py
 └── tests/                # Test suite
     ├── __init__.py
@@ -227,23 +217,6 @@ python tests/test_utils.py
 # - Configuration validation
 ```
 
-## 🔐 GitHub Token (Optional)
-
-For higher API rate limits when fetching PRs:
-
-### Linux/macOS
-```bash
-export GITHUB_TOKEN="your_github_token"
-```
-
-### Windows PowerShell
-```powershell
-$env:GITHUB_TOKEN="your_github_token"
-```
-
-### GitHub Actions
-Already configured - uses `${{ secrets.GITHUB_TOKEN }}` automatically.
-
 ## 📊 Output Formats
 
 ### PDF Resume (`cv.pdf`)
@@ -258,11 +231,11 @@ Follows JSON Resume Schema v1.0.0:
 ## 🛡️ Error Handling
 
 The scripts include comprehensive error handling:
-- Retry logic for API calls
-- Fallback text if GitHub API fails
 - Safe file operations with validation
 - LaTeX character escaping
+- JSON serialization error handling
 - Type checking with Pyright
+- Fallback values for missing data
 
 ## 🤝 Contributing
 
@@ -277,12 +250,6 @@ The scripts include comprehensive error handling:
 This project is open source and available for personal and commercial use.
 
 ## 🐛 Troubleshooting
-
-### "GITHUB_TOKEN not found"
-This is just a warning. Scripts will work but with lower API rate limits (60 req/hour instead of 5000).
-
-### "latest_pr.tex not found"
-Run `python scripts/fetch_latest_pr.py` first, or the Makefile will auto-create it.
 
 ### LaTeX compilation errors
 Ensure you have a complete LaTeX distribution installed with required packages.
