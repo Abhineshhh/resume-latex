@@ -101,8 +101,7 @@
         "Spring Data JPA",
         "Spring Security",
         "Hibernate",
-        "Maven",
-        "RESTful APIs"
+        "Maven"
       ]
     },
     {
@@ -138,7 +137,7 @@
   "references": [],
   "projects": [
     {
-      "name": "TaskManager API",
+      "name": "\\href{https://github.com/Abhineshhh/TaskManager}{TaskManager API}",
       "description": "Engineered RESTful API with CRUD operations supporting 1000+ daily tasks",
       "highlights": [
         "Optimized transaction management, reducing database locks by 60%",
@@ -153,7 +152,7 @@
       ],
       "startDate": "",
       "endDate": "",
-      "url": "https://github.com/Abhineshhh/TaskManager",
+      "url": "",
       "roles": [
         "Developer"
       ],
@@ -161,7 +160,7 @@
       "type": "application"
     },
     {
-      "name": "PeerLink - Secure P2P File Sharing Platform",
+      "name": "\\href{https://github.com/Abhineshhh/Peerlink}{PeerLink - Secure P2P File Sharing Platform}",
       "description": "Built with socket programming to enable file sharing via sockets without cloud storage",
       "highlights": [
         "Built P2P file transfer system supporting 500MB+ transfers",
@@ -177,7 +176,7 @@
       ],
       "startDate": "",
       "endDate": "",
-      "url": "https://github.com/Abhineshhh/Peerlink",
+      "url": "",
       "roles": [
         "Developer"
       ],
