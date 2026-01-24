@@ -1,17 +1,17 @@
 % Projects section
 \section{Projects}
 
-\cventry{\href{https://github.com/Abhineshhh/TaskManager}{TaskManager API}}{Spring Boot, Java, MySQL}{}{
+\cventry{\href{https://github.com/Abhineshhh/caching-proxy}{Caching Proxy \faIcon{github}}}{Java , Spring Boot, Spring Data Redis, Redis}{}{
 \begin{itemizecompact}
-  \item Engineered RESTful API with CRUD operations supporting 1000+ daily tasks
-  \item Optimized transaction management, reducing database locks by 60\%
-  \item Achieved 200ms response time via JPA query optimization
-  \item Ensured data integrity with transaction boundaries and persistence
-  \item Deployed containerized app with Docker, ensuring 99.9\% uptime
+  \item Built an HTTP caching proxy using Spring Boot to forward and cache GET requests
+  \item Integrated Redis caching with configurable TTL to reduce upstream server load
+  \item Implemented cache hit/miss tracking via custom X-Cache response headers
+  \item Added a cache invalidation endpoint for manual cache management
+  \item Used Dockerized Redis and environment-based configuration for easy deployment
 \end{itemizecompact}
 }
 
-\cventry{\href{https://github.com/Abhineshhh/Peerlink}{PeerLink - Secure P2P File Sharing Platform}}{Java, Next.js, TypeScript}{}{
+\cventry{\href{https://github.com/Abhineshhh/Peerlink}{PeerLink - Secure P2P File Sharing Platform \faIcon{github}}}{Java, Next.js, TypeScript}{}{
 \begin{itemizecompact}
   \item Built with socket programming to enable file sharing via sockets without cloud storage
   \item Built P2P file transfer system supporting 500MB+ transfers

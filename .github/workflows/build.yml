@@ -1,4 +1,4 @@
-name: Build CV and Deploy
+name: Build and Test CV
 
 on:
   push:
@@ -10,8 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write  # Required to commit built files back to repo
     
     steps:
       - name: Checkout repository
@@ -64,16 +62,3 @@ jobs:
           name: resume-all-formats
           path: docs/
           retention-days: 90
-      
-      - name: Commit and push built files
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore: auto-update resume files [skip ci]"
-            git push
-          fi

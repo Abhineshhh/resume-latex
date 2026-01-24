@@ -84,6 +84,7 @@
       "level": "",
       "keywords": [
         "Java",
+        "Go",
         "Python",
         "C",
         "C++",
@@ -137,18 +138,19 @@
   "references": [],
   "projects": [
     {
-      "name": "\\href{https://github.com/Abhineshhh/TaskManager}{TaskManager API}",
-      "description": "Engineered RESTful API with CRUD operations supporting 1000+ daily tasks",
+      "name": "\\href{https://github.com/Abhineshhh/caching-proxy}{Caching Proxy \\faIcon{github}}",
+      "description": "Built an HTTP caching proxy using Spring Boot to forward and cache GET requests",
       "highlights": [
-        "Optimized transaction management, reducing database locks by 60%",
-        "Achieved 200ms response time via JPA query optimization",
-        "Ensured data integrity with transaction boundaries and persistence",
-        "Deployed containerized app with Docker, ensuring 99.9% uptime"
+        "Integrated Redis caching with configurable TTL to reduce upstream server load",
+        "Implemented cache hit/miss tracking via custom X-Cache response headers",
+        "Added a cache invalidation endpoint for manual cache management",
+        "Used Dockerized Redis and environment-based configuration for easy deployment"
       ],
       "keywords": [
-        "Spring Boot",
         "Java",
-        "MySQL"
+        "Spring Boot",
+        "Spring Data Redis",
+        "Redis"
       ],
       "startDate": "",
       "endDate": "",
@@ -160,7 +162,7 @@
       "type": "application"
     },
     {
-      "name": "\\href{https://github.com/Abhineshhh/Peerlink}{PeerLink - Secure P2P File Sharing Platform}",
+      "name": "\\href{https://github.com/Abhineshhh/Peerlink}{PeerLink - Secure P2P File Sharing Platform \\faIcon{github}}",
       "description": "Built with socket programming to enable file sharing via sockets without cloud storage",
       "highlights": [
         "Built P2P file transfer system supporting 500MB+ transfers",
