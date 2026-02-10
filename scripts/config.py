@@ -9,7 +9,7 @@ PERSONAL_INFO = {
     "name": "Abhinesh Jha",
     "title": "Backend Developer",
     "email": "jhaabhinesh977@gmail.com",
-    "phone": "",
+    "phone": "+91 9334305214",
     "linkedin": "https://linkedin.com/in/abhineshjha",
     "github": "https://github.com/Abhineshhh",
     "website": "https://abhineshhh.me",
