@@ -27,7 +27,22 @@
       }
     ]
   },
-  "work": [],
+  "work": [
+    {
+      "name": "PW Skills",
+      "position": "Java Developer Intern",
+      "url": "",
+      "startDate": "2025-07",
+      "endDate": "2025-10",
+      "summary": "Developed REST APIs with Java and Spring Boot, reducing latency by 40% across applications",
+      "highlights": [
+        "Developed REST APIs with Java and Spring Boot, reducing latency by 40% across applications",
+        "Optimized Backend logic using Collections and Streams, increasing processing speed by 35% overall",
+        "Improved Queries with Hibernate and MySQL, reducing database query time from 2s to 100ms",
+        "Implemented OOPs Principles and exception handling, improving readability and maintainability"
+      ]
+    }
+  ],
   "volunteer": [
     {
       "organization": "HackSquad by Novu",
@@ -101,8 +116,7 @@
         "Spring MVC",
         "Spring Data JPA",
         "Spring Security",
-        "Hibernate",
-        "Maven"
+        "Hibernate"
       ]
     },
     {
@@ -120,6 +134,7 @@
       "level": "",
       "keywords": [
         "Git",
+        "Maven",
         "Docker",
         "Linux",
         "Postman",

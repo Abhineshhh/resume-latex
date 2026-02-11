@@ -6,7 +6,7 @@ A modular LaTeX resume system that generates professional PDF and JSON Resume fo
 
 - PDF generation using Charter font
 - JSON Resume format (jsonresume.org compatible)
-- Modular LaTeX sections (summary, projects, skills, education)
+- Modular LaTeX sections (experience, projects, open source, skills, education)
 - Python scripts for automated JSON generation
 
 ## Prerequisites
@@ -54,11 +54,12 @@ resume-latex/
 ├── cv.tex                # Main LaTeX file
 ├── Makefile             # Build automation
 ├── sections/            # Resume sections
-│   ├── summary.tex
+│   ├── experience.tex   # Work experience (PDF)
 │   ├── projects.tex
 │   ├── open_source.tex
 │   ├── skills.tex
-│   └── education.tex
+│   ├── education.tex
+│   └── summary.tex      # Professional summary (JSON only)
 ├── style/               # LaTeX styling
 │   ├── header.tex
 │   └── macros.tex

@@ -383,6 +383,10 @@ def get_summary_text() -> str:
     """
     Parse summary text from sections/summary.tex.
     Returns the summary content without section header.
+    
+    Note: summary.tex is used for JSON Resume generation only,
+    and is NOT included in the PDF output.
+    
     Falls back to config.SUMMARY_TEXT if parsing fails.
     """
     from config import SUMMARY_TEXT, SECTIONS_DIR

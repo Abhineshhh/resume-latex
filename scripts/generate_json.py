@@ -61,6 +61,89 @@ def parse_projects_from_latex():
     return projects
 
 
+def parse_experience_from_latex():
+    """Parse work experience data from experience.tex file."""
+    filepath = os.path.join(SECTIONS_DIR, "experience.tex")
+    content = read_file_safe(filepath)
+    
+    if not content:
+        return []
+    
+    work_experiences = []
+    
+    # Extract company and position from the line: \textbf{Position} \textbar{} \textit{Company}
+    import re
+    position_pattern = r'\\textbf\{([^}]+)\}\s*\\textbar\{\}\s*\\textit\{([^}]+)\}'
+    date_pattern = r'\\textit\{([^}]+)\}'
+    
+    position_match = re.search(position_pattern, content)
+    if not position_match:
+        return []
+    
+    position = position_match.group(1).strip()
+    company = position_match.group(2).strip()
+    
+    # Extract dates (find the last \textit after the position line)
+    dates_part = content[position_match.end():]
+    date_match = re.search(date_pattern, dates_part)
+    dates = date_match.group(1) if date_match else ""
+    
+    # Parse start and end dates
+    start_date = ""
+    end_date = ""
+    if '--' in dates or '-' in dates:
+        parts = re.split(r'\s*--\s*|\s*-\s*', dates)
+        if len(parts) >= 2:
+            start_month_year = parts[0].strip()
+            end_month_year = parts[1].strip()
+            
+            # Convert "July 2025" to "2025-07"
+            month_map = {
+                'January': '01', 'February': '02', 'March': '03', 'April': '04',
+                'May': '05', 'June': '06', 'July': '07', 'August': '08',
+                'September': '09', 'October': '10', 'November': '11', 'December': '12',
+                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'Jun': '06',
+                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
+            }
+            
+            for month, num in month_map.items():
+                if month in start_month_year:
+                    year = start_month_year.split()[-1]
+                    start_date = f"{year}-{num}"
+                    break
+            
+            for month, num in month_map.items():
+                if month in end_month_year:
+                    year = end_month_year.split()[-1]
+                    end_date = f"{year}-{num}"
+                    break
+    
+    # Extract bullet points
+    highlights = []
+    item_pattern = r'\\item\s+([^\n]+)'
+    for match in re.finditer(item_pattern, content):
+        item_text = match.group(1).strip()
+        # Clean LaTeX syntax
+        item_text = clean_latex_to_plain(item_text)
+        if item_text:
+            highlights.append(item_text)
+    
+    # Create work experience entry
+    if position and company and highlights:
+        work_experience = {
+            "name": company,
+            "position": position,
+            "url": "",
+            "startDate": start_date,
+            "endDate": end_date,
+            "summary": highlights[0] if highlights else "",
+            "highlights": highlights
+        }
+        work_experiences.append(work_experience)
+    
+    return work_experiences
+
+
 def parse_open_source_from_config():
     """Get open source contributions from config.py."""
     # Return structured data from config for JSON Resume format
@@ -78,6 +161,9 @@ def generate_json_resume():
         # Parse projects from LaTeX
         projects = parse_projects_from_latex()
         volunteer = parse_open_source_from_config()
+        
+        # Parse work experience from LaTeX
+        work = parse_experience_from_latex()
         
         # Get summary from summary.tex
         summary_text = get_summary_text()
@@ -126,7 +212,7 @@ def generate_json_resume():
                 }
             ]
         },
-        "work": [],
+        "work": work,
         "volunteer": volunteer,
         "education": [
             {
@@ -168,6 +254,7 @@ def generate_json_resume():
         
         if success:
             logger.info(f"JSON resume generated successfully")
+            logger.info(f"  Work experience entries: {len(work)}")
             logger.info(f"  Projects parsed: {len(projects)}")
             logger.info(f"  Skills categories: {len(skills)}")
             logger.info(f"  Validate at: https://jsonresume.org/schema/")

@@ -33,7 +33,9 @@ OUTPUT_FILES = {
     "json": "docs/resume.json"
 }
 
-# Resume Content Summary - parsed from sections/summary.tex by utils.get_summary_text()
+# Resume Content Summary
+# Parsed from sections/summary.tex by utils.get_summary_text()
+# Note: summary.tex is used for JSON Resume generation, NOT included in PDF
 # Fallback if parsing fails:
 SUMMARY_TEXT = "Backend developer specializing in Java and Spring Boot with expertise in building production-grade distributed systems."
 
