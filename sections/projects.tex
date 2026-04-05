@@ -1,23 +1,24 @@
 % Projects section
 \section{Projects}
 
-\cventry{\href{https://github.com/Abhineshhh/caching-proxy}{Caching Proxy \faIcon{github}}}{Java , Spring Boot, Spring Data Redis, Redis}{}{
+\cventry{Caching Proxy \href{https://github.com/Abhineshhh/caching-proxy}{\faIcon{github}}}{Java, Spring Boot, Spring Data Redis, Redis}{}{
 \begin{itemizecompact}
-  \item Built an HTTP caching proxy using Spring Boot to forward and cache GET requests
-  \item Integrated Redis caching with configurable TTL to reduce upstream server load
-  \item Implemented cache hit/miss tracking via custom X-Cache response headers
-  \item Added a cache invalidation endpoint for manual cache management
-  \item Used Dockerized Redis and environment-based configuration for easy deployment
+  \item Built an HTTP caching proxy in Spring Boot with Redis-backed GET caching to cut redundant API calls and reduce upstream load.
+  \item Added configurable TTL/invalidation policies and X-Cache observability headers, with Dockerized Redis for consistent local setup.
 \end{itemizecompact}
 }
 
-\cventry{\href{https://github.com/Abhineshhh/Peerlink}{PeerLink - Secure P2P File Sharing Platform \faIcon{github}}}{Java, Next.js, TypeScript}{}{
+\cventry{PeerLink - Secure P2P File Sharing Platform \href{https://github.com/Abhineshhh/Peerlink}{\faIcon{github}}}{Java, Next.js, TypeScript}{}{
 \begin{itemizecompact}
-  \item Built with socket programming to enable file sharing via sockets without cloud storage
-  \item Built P2P file transfer system supporting 500MB+ transfers
-  \item 7-layer security: PIN authentication, rate limiting, auto-delete
-  \item Architected thread-safe system handling 50+ transfers concurrently
-  \item Built custom HTTP parser achieving 30\% faster upload speeds
-  \item Developed file validation preventing malicious uploads
+  \item Built a socket-based P2P file sharing system for secure, cloud-free transfers of files larger than 500MB.
+  \item Engineered a thread-safe transfer engine for 50+ concurrent sessions and improved upload speed by 30\% using a custom HTTP parser with layered security controls.
+\end{itemizecompact}
+}
+
+\cventry{Dispatchr \href{https://github.com/Abhineshhh/Dispatchr}{\faIcon{github}}}
+{Go, Goroutines, Docker, Mailpit}{}{
+\begin{itemizecompact}
+  \item Built a concurrent bulk email dispatcher in Go using a worker-pool architecture with Goroutines and Channels for high-throughput sends.
+  \item Reduced runtime overhead by preloading templates at startup and added resilient CSV/error handling so bad rows or failed deliveries do not halt processing.
 \end{itemizecompact}
 }

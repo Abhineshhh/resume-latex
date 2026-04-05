@@ -30,16 +30,16 @@
   "work": [
     {
       "name": "PW Skills",
-      "position": "Java Developer Intern",
+      "position": "Backend Developer Intern",
       "url": "",
       "startDate": "2025-07",
       "endDate": "2025-10",
-      "summary": "Developed REST APIs with Java and Spring Boot, reducing latency by 40% across applications",
+      "summary": "Built RESTful APIs with Java & Spring Boot, cutting response latency by 40%",
       "highlights": [
-        "Developed REST APIs with Java and Spring Boot, reducing latency by 40% across applications",
-        "Optimized Backend logic using Collections and Streams, increasing processing speed by 35% overall",
-        "Improved Queries with Hibernate and MySQL, reducing database query time from 2s to 100ms",
-        "Implemented OOPs Principles and exception handling, improving readability and maintainability"
+        "Built RESTful APIs with Java & Spring Boot, cutting response latency by 40%",
+        "Optimized backend pipelines using Collections & Stream API, boosting throughput by 35%",
+        "Tuned Hibernate & MySQL queries, reducing execution time from 2s to 100ms",
+        "Applied SOLID principles & exception handling, improving code maintainability and readability"
       ]
     }
   ],
@@ -114,8 +114,8 @@
       "keywords": [
         "Spring Boot",
         "Spring MVC",
-        "Spring Data JPA",
         "Spring Security",
+        "FastAPI",
         "Hibernate"
       ]
     },
@@ -153,13 +153,10 @@
   "references": [],
   "projects": [
     {
-      "name": "\\href{https://github.com/Abhineshhh/caching-proxy}{Caching Proxy \\faIcon{github}}",
-      "description": "Built an HTTP caching proxy using Spring Boot to forward and cache GET requests",
+      "name": "Caching Proxy \\href{https://github.com/Abhineshhh/caching-proxy}{\\faIcon{github}}",
+      "description": "Built an HTTP caching proxy in Spring Boot with Redis-backed GET caching to cut redundant API calls and reduce upstream load.",
       "highlights": [
-        "Integrated Redis caching with configurable TTL to reduce upstream server load",
-        "Implemented cache hit/miss tracking via custom X-Cache response headers",
-        "Added a cache invalidation endpoint for manual cache management",
-        "Used Dockerized Redis and environment-based configuration for easy deployment"
+        "Added configurable TTL/invalidation policies and X-Cache observability headers, with Dockerized Redis for consistent local setup."
       ],
       "keywords": [
         "Java",
@@ -177,19 +174,36 @@
       "type": "application"
     },
     {
-      "name": "\\href{https://github.com/Abhineshhh/Peerlink}{PeerLink - Secure P2P File Sharing Platform \\faIcon{github}}",
-      "description": "Built with socket programming to enable file sharing via sockets without cloud storage",
+      "name": "PeerLink - Secure P2P File Sharing Platform \\href{https://github.com/Abhineshhh/Peerlink}{\\faIcon{github}}",
+      "description": "Built a socket-based P2P file sharing system for secure, cloud-free transfers of files larger than 500MB.",
       "highlights": [
-        "Built P2P file transfer system supporting 500MB+ transfers",
-        "7-layer security: PIN authentication, rate limiting, auto-delete",
-        "Architected thread-safe system handling 50+ transfers concurrently",
-        "Built custom HTTP parser achieving 30% faster upload speeds",
-        "Developed file validation preventing malicious uploads"
+        "Engineered a thread-safe transfer engine for 50+ concurrent sessions and improved upload speed by 30% using a custom HTTP parser with layered security controls."
       ],
       "keywords": [
         "Java",
         "Next.js",
         "TypeScript"
+      ],
+      "startDate": "",
+      "endDate": "",
+      "url": "",
+      "roles": [
+        "Developer"
+      ],
+      "entity": "",
+      "type": "application"
+    },
+    {
+      "name": "Dispatchr \\href{https://github.com/Abhineshhh/Dispatchr}{\\faIcon{github}}",
+      "description": "Built a concurrent bulk email dispatcher in Go using a worker-pool architecture with Goroutines and Channels for high-throughput sends.",
+      "highlights": [
+        "Reduced runtime overhead by preloading templates at startup and added resilient CSV/error handling so bad rows or failed deliveries do not halt processing."
+      ],
+      "keywords": [
+        "Go",
+        "Goroutines",
+        "Docker",
+        "Mailpit"
       ],
       "startDate": "",
       "endDate": "",
