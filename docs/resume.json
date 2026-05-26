@@ -29,13 +29,16 @@
   },
   "work": [
     {
-      "name": "PW Skills",
-      "position": "Backend Developer Intern",
+      "name": "Contract",
+      "position": "AI Tutor - Software Engineering",
       "url": "",
-      "startDate": "2025-07",
-      "endDate": "2025-10",
-      "summary": "Built RESTful APIs with Java & Spring Boot, cutting response latency by 40%",
+      "startDate": "",
+      "endDate": "",
+      "summary": "Evaluated AI-generated software engineering responses for LLM training.",
       "highlights": [
+        "Evaluated AI-generated software engineering responses for LLM training.",
+        "Reviewed backend and system design solutions for quality and scalability.",
+        "Improved technical clarity and reasoning accuracy in model-generated outputs.",
         "Built RESTful APIs with Java & Spring Boot, cutting response latency by 40%",
         "Optimized backend pipelines using Collections & Stream API, boosting throughput by 35%",
         "Tuned Hibernate & MySQL queries, reducing execution time from 2s to 100ms",
