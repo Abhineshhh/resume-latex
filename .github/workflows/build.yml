@@ -21,9 +21,6 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
-      - name: Install Python dependencies
-        run: pip install requests
-
       - name: Run tests
         run: python tests/test_utils.py
         continue-on-error: false
@@ -47,6 +44,20 @@ jobs:
         run: |
           echo "Verifying generated files..."
           ls -lh cv.pdf docs/index.pdf docs/resume.json
+          # Sanity-check JSON is not missing roles / has clean project names
+          python - <<'PY'
+          import json, sys
+          with open("docs/resume.json", encoding="utf-8") as f:
+              data = json.load(f)
+          work = data.get("work") or []
+          projects = data.get("projects") or []
+          edu = data.get("education") or []
+          assert len(work) >= 2, f"expected >=2 work entries, got {len(work)}"
+          assert all("\\href" not in (p.get("name") or "") for p in projects), "project names still contain LaTeX"
+          assert any((p.get("url") or "").startswith("http") for p in projects), "expected at least one project URL"
+          assert edu and "8.4" in (edu[0].get("score") or ""), f"unexpected education score: {edu}"
+          print(f"✓ JSON sanity OK ({len(work)} jobs, {len(projects)} projects)")
+          PY
           echo "✓ All files generated successfully"
 
       - name: Upload PDF artifact

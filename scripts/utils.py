@@ -220,53 +220,128 @@ def clean_latex_to_plain(text: str) -> str:
     return text.strip()
 
 
+def _extract_braced_arg(text: str, start: int) -> Tuple[Optional[str], int]:
+    """
+    Given start at an opening '{', return (inner_content, position_after_closing_brace).
+    Returns (None, start) if not a valid braced arg.
+    """
+    if start >= len(text) or text[start] != '{':
+        return None, start
+    end = find_matching_brace(text, start + 1)
+    if end == -1:
+        return None, start
+    return text[start + 1:end - 1], end
+
+
+def extract_href(text: str) -> Tuple[str, str]:
+    """
+    Extract the first \\href{url}{label} from LaTeX text.
+    Handles nested braces in the label (e.g. \\faIcon{github}).
+    Returns (url, label) or ("", "") if not found.
+    """
+    if not text:
+        return "", ""
+
+    idx = 0
+    while True:
+        match = re.search(r'\\href\b', text[idx:])
+        if not match:
+            return "", ""
+        pos = idx + match.end()
+        while pos < len(text) and text[pos] in ' \t\n':
+            pos += 1
+        url, pos = _extract_braced_arg(text, pos)
+        if url is None:
+            idx = idx + match.end()
+            continue
+        while pos < len(text) and text[pos] in ' \t\n':
+            pos += 1
+        label, pos = _extract_braced_arg(text, pos)
+        if label is None:
+            idx = idx + match.end()
+            continue
+        return url.strip(), label.strip()
+
+
+def strip_latex_commands_from_title(title: str) -> str:
+    """
+    Clean a cventry title that may embed \\href{...}{\\faIcon{...}} or similar.
+    Keeps the human-readable project/job name only.
+    """
+    if not title:
+        return ""
+
+    # Remove all \\href{...}{...} blocks (brace-aware)
+    cleaned = title
+    while True:
+        match = re.search(r'\\href\b', cleaned)
+        if not match:
+            break
+        start = match.start()
+        pos = match.end()
+        while pos < len(cleaned) and cleaned[pos] in ' \t\n':
+            pos += 1
+        _, pos = _extract_braced_arg(cleaned, pos)
+        while pos < len(cleaned) and cleaned[pos] in ' \t\n':
+            pos += 1
+        _, pos = _extract_braced_arg(cleaned, pos)
+        if pos <= start:
+            # Avoid infinite loop on malformed input
+            cleaned = cleaned[:start] + cleaned[start + 5:]
+            continue
+        cleaned = cleaned[:start] + cleaned[pos:]
+
+    cleaned = clean_latex_to_plain(cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned).strip(' |-')
+    return cleaned.strip()
+
+
 def parse_cventry(text: str) -> List[Dict[str, str]]:
     """
     Parse all \\cventry commands from LaTeX text.
-    
+
     Args:
         text: LaTeX content containing cventry commands
-    
+
     Returns:
         List of dicts with keys: title, tech, link_url, link_text, content
     """
     if not text:
         logger.warning("Empty text provided to parse_cventry")
         return []
-    
+
     entries = []
     pos = 0
     entry_num = 0
-    
+
     while True:
         match = re.search(r'\\cventry', text[pos:])
         if not match:
             break
-        
+
         entry_num += 1
         match_pos = pos + match.end()
-        
+
         # Extract 4 arguments
         args, end_pos = extract_latex_args(text, match_pos, 4)
-        
+
         if args and len(args) == 4:
-            title, tech, link_content, content = args
-            
-            # Parse href from link if present
-            link_match = re.search(r'\\href\{([^}]+)\}\{([^}]+)\}', link_content)
-            if link_match:
-                url = link_match.group(1)
-                link_text = link_match.group(2)
-            else:
-                url = ""
-                link_text = link_content
-            
+            title_raw, tech, link_content, content = args
+
+            # Prefer explicit link arg; fall back to href embedded in the title
+            # (common pattern: \cventry{Name \href{url}{\faIcon{github}}}{tech}{}{...})
+            url, link_text = extract_href(link_content)
+            if not url:
+                url, link_text = extract_href(title_raw)
+
+            title = strip_latex_commands_from_title(title_raw)
+
             entries.append({
-                'title': title.strip(),
+                'title': title,
                 'tech': tech.strip(),
-                'link_url': url.strip(),
-                'link_text': link_text.strip(),
-                'content': content.strip()
+                'link_url': url,
+                'link_text': link_text,
+                'content': content.strip(),
             })
             pos = end_pos
             logger.debug(f"Successfully parsed cventry #{entry_num}: {title}")
@@ -274,9 +349,18 @@ def parse_cventry(text: str) -> List[Dict[str, str]]:
             # Failed to parse, skip this occurrence
             logger.warning(f"Failed to parse cventry #{entry_num} at position {match_pos}")
             pos = match_pos + 1
-    
+
     logger.info(f"Parsed {len(entries)} cventry commands successfully")
     return entries
+
+
+MONTH_MAP = {
+    'January': '01', 'February': '02', 'March': '03', 'April': '04',
+    'May': '05', 'June': '06', 'July': '07', 'August': '08',
+    'September': '09', 'October': '10', 'November': '11', 'December': '12',
+    'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'Jun': '06',
+    'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12',
+}
 
 
 def validate_url(url: str) -> bool:
@@ -383,26 +467,26 @@ def get_summary_text() -> str:
     """
     Parse summary text from sections/summary.tex.
     Returns the summary content without section header.
-    
+
     Note: summary.tex is used for JSON Resume generation only,
     and is NOT included in the PDF output.
-    
+
     Falls back to config.SUMMARY_TEXT if parsing fails.
     """
     from config import SUMMARY_TEXT, SECTIONS_DIR
-    
+
     filepath = os.path.join(SECTIONS_DIR, "summary.tex")
     content = read_file_safe(filepath)
-    
+
     if not content:
         logger.warning(f"Could not read {filepath}, using fallback summary")
         return SUMMARY_TEXT
-    
+
     # Remove section header and LaTeX commands
     # Pattern: \section{Summary} followed by \noindent and the actual text
     pattern = r'\\section\{Summary\}\s*\\noindent\s+(.*?)(?=\\section|$)'
     match = re.search(pattern, content, re.DOTALL)
-    
+
     if match:
         summary = match.group(1).strip()
         # Clean up LaTeX formatting
@@ -412,3 +496,189 @@ def get_summary_text() -> str:
     else:
         logger.warning(f"Could not parse summary from {filepath}, using fallback")
         return SUMMARY_TEXT
+
+
+def parse_month_year_date(date_str: str) -> str:
+    """
+    Convert a human date fragment like "July 2025" or "Present" into JSON Resume style.
+    Returns "YYYY-MM", "YYYY", "" (Present/current), or "" if unparseable.
+    """
+    if not date_str:
+        return ""
+    s = date_str.strip()
+    if re.match(r'(?i)^(present|current|now)$', s):
+        return ""  # JSON Resume uses empty endDate for current roles
+
+    for month, num in MONTH_MAP.items():
+        if month in s:
+            parts = s.split()
+            year = parts[-1] if parts else ""
+            if re.fullmatch(r'\d{4}', year):
+                return f"{year}-{num}"
+            break
+
+    # Bare year
+    if re.fullmatch(r'\d{4}', s):
+        return s
+    return ""
+
+
+def parse_date_range(dates: str) -> Tuple[str, str]:
+    """
+    Parse a date range string such as:
+      "May 2026 - Present"
+      "July 2025 - Oct 2025"
+      "2022 - 2026"
+    Returns (startDate, endDate) in JSON Resume format.
+    """
+    if not dates:
+        return "", ""
+
+    dates = dates.strip()
+    # Prefer en-dash / em-dash / spaced hyphen separators over single hyphens inside words
+    parts = re.split(r'\s*(?:--|–|—|\s-\s)\s*', dates)
+    if len(parts) < 2:
+        # Fallback: last hyphen split if looks like "May 2026 - Present"
+        parts = re.split(r'\s+-\s+', dates)
+
+    if len(parts) >= 2:
+        return parse_month_year_date(parts[0]), parse_month_year_date(parts[1])
+    if len(parts) == 1:
+        return parse_month_year_date(parts[0]), ""
+    return "", ""
+
+
+def parse_experience_from_latex() -> List[Dict[str, Any]]:
+    """
+    Parse work experience entries from sections/experience.tex.
+
+    Expected LaTeX shape (one block per role):
+      \\noindent\\textbf{Position} \\textbar{} \\textit{Type} \\textbar{} \\textit{Company}
+        \\hfill \\textit{Start - End}
+      \\begin{itemizecompact}
+        \\item ...
+      \\end{itemizecompact}
+    """
+    from config import SECTIONS_DIR
+
+    filepath = os.path.join(SECTIONS_DIR, "experience.tex")
+    content = read_file_safe(filepath)
+    if not content:
+        return []
+
+    # Header line: bold position, italic type, italic company, italic dates
+    header_pattern = re.compile(
+        r'\\noindent\\textbf\{([^}]+)\}\s*\\textbar\{\}\s*\\textit\{([^}]+)\}\s*\\textbar\{\}\s*\\textit\{([^}]+)\}'
+        r'(?:\s*\\hfill\s*\\textit\{([^}]+)\})?',
+        re.MULTILINE,
+    )
+
+    matches = list(header_pattern.finditer(content))
+    if not matches:
+        logger.warning(f"No experience entries matched in {filepath}")
+        return []
+
+    work_experiences: List[Dict[str, Any]] = []
+
+    for i, match in enumerate(matches):
+        position = match.group(1).strip()
+        employment_type = match.group(2).strip()  # Contract / Internship / etc.
+        company = match.group(3).strip()
+        dates = (match.group(4) or "").strip()
+        start_date, end_date = parse_date_range(dates)
+
+        # Slice between this header and the next (or EOF) to collect bullets for this role only
+        block_start = match.end()
+        block_end = matches[i + 1].start() if i + 1 < len(matches) else len(content)
+        block = content[block_start:block_end]
+
+        highlights = []
+        for item_match in re.finditer(r'\\item\s+(.+?)(?=\n\s*\\item|\n\s*\\end\{|\Z)', block, re.DOTALL):
+            item_text = clean_latex_to_plain(item_match.group(1)).strip()
+            if item_text:
+                highlights.append(item_text)
+
+        if not (position and company and highlights):
+            logger.warning(f"Skipping incomplete experience entry: {position!r} @ {company!r}")
+            continue
+
+        # Encode employment type in position when useful (Contract / Internship)
+        display_position = position
+        if employment_type and employment_type.lower() not in position.lower():
+            display_position = f"{position} ({employment_type})"
+
+        work_experiences.append({
+            "name": company,
+            "position": display_position,
+            "url": "",
+            "startDate": start_date,
+            "endDate": end_date,
+            "summary": highlights[0],
+            "highlights": highlights,
+        })
+
+    logger.info(f"Parsed {len(work_experiences)} work experience entries from {filepath}")
+    return work_experiences
+
+
+def parse_education_from_latex() -> List[Dict[str, Any]]:
+    """
+    Parse education from sections/education.tex, with config.EDUCATION as fallback.
+    """
+    from config import SECTIONS_DIR, EDUCATION
+
+    filepath = os.path.join(SECTIONS_DIR, "education.tex")
+    content = read_file_safe(filepath)
+    if not content:
+        return [dict(EDUCATION)]
+
+    institution = EDUCATION["institution"]
+    inst_match = re.search(r'\\noindent\\textbf\{([^}]+)\}', content)
+    if inst_match:
+        institution = inst_match.group(1).strip()
+
+    # Dates on first line: \hfill \textit{2022 - 2026}
+    start_date, end_date = EDUCATION["startDate"], EDUCATION["endDate"]
+    date_match = re.search(r'\\hfill\s*\\textit\{([^}]+)\}', content)
+    if date_match:
+        s, e = parse_date_range(date_match.group(1))
+        if s:
+            start_date = s
+        if e:
+            end_date = e
+
+    # Degree line: \textit{Bachelor of Technology in Computer Science} \hfill \textbf{CGPA: 8.4/10}
+    area = EDUCATION["area"]
+    study_type = EDUCATION["studyType"]
+    score = EDUCATION["score"]
+
+    degree_match = re.search(r'\\textit\{([^}]+)\}', content)
+    if degree_match:
+        degree_text = degree_match.group(1).strip()
+        # "Bachelor of Technology in Computer Science"
+        if ' in ' in degree_text:
+            study_part, area_part = degree_text.split(' in ', 1)
+            study_type = study_part.replace('Bachelor of Technology', 'B.Tech').strip()
+            area = area_part.strip()
+        else:
+            area = degree_text
+
+    cgpa_match = re.search(r'\\textbf\{CGPA:\s*([^}]+)\}', content)
+    if cgpa_match:
+        score = f"{cgpa_match.group(1).strip()} CGPA"
+
+    courses = list(EDUCATION.get("courses", []))
+    focus_match = re.search(r'Academic Focus:\}\s*([^\n\\]+)', content)
+    if focus_match:
+        courses = [c.strip() for c in focus_match.group(1).split(',') if c.strip()]
+
+    return [{
+        "institution": institution,
+        "url": EDUCATION.get("url", ""),
+        "area": area,
+        "studyType": study_type,
+        "startDate": start_date,
+        "endDate": end_date,
+        "score": score,
+        "courses": courses,
+    }]

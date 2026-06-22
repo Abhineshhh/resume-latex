@@ -203,6 +203,83 @@ def test_double_backslash_braces():
     assert text[pos-1] == '}'
 
 
+def test_parse_date_range():
+    """Test human date ranges used in experience.tex."""
+    from utils import parse_date_range, parse_month_year_date
+
+    assert parse_month_year_date("Present") == ""
+    assert parse_month_year_date("July 2025") == "2025-07"
+    assert parse_month_year_date("Oct 2025") == "2025-10"
+
+    start, end = parse_date_range("May 2026 - Present")
+    assert start == "2026-05"
+    assert end == ""
+
+    start, end = parse_date_range("July 2025 - Oct 2025")
+    assert start == "2025-07"
+    assert end == "2025-10"
+
+    start, end = parse_date_range("2022 - 2026")
+    assert start == "2022"
+    assert end == "2026"
+
+
+def test_parse_experience_from_latex():
+    """Experience parser should return both roles with correct companies/dates."""
+    from utils import parse_experience_from_latex
+
+    work = parse_experience_from_latex()
+    assert len(work) == 2
+
+    xai = work[0]
+    assert xai["name"] == "xAI"
+    assert "AI Tutor" in xai["position"]
+    assert xai["startDate"] == "2026-05"
+    assert xai["endDate"] == ""  # Present
+    assert len(xai["highlights"]) == 3
+
+    pw = work[1]
+    assert pw["name"] == "PW Skills"
+    assert "Backend Developer" in pw["position"]
+    assert pw["startDate"] == "2025-07"
+    assert pw["endDate"] == "2025-10"
+    assert len(pw["highlights"]) == 4
+
+    # Bullets must not leak across roles
+    xai_text = " ".join(xai["highlights"])
+    assert "RESTful APIs" not in xai_text
+    pw_text = " ".join(pw["highlights"])
+    assert "LLM training" not in pw_text
+
+
+def test_parse_education_from_latex():
+    """Education should reflect sections/education.tex (CGPA 8.4)."""
+    from utils import parse_education_from_latex
+
+    edu = parse_education_from_latex()
+    assert len(edu) == 1
+    assert edu[0]["institution"] == "Maharshi Dayanand University"
+    assert "8.4" in edu[0]["score"]
+    assert edu[0]["startDate"] == "2022"
+    assert edu[0]["endDate"] == "2026"
+
+
+def test_cventry_title_href_extraction():
+    """Titles with embedded github hrefs should yield clean names + URLs."""
+    latex = r"""
+    \cventry{Caching Proxy \href{https://github.com/Abhineshhh/caching-proxy}{\faIcon{github}}}{Java, Redis}{}{
+    \begin{itemize}
+      \item Built a proxy
+    \end{itemize}
+    }
+    """
+    entries = parse_cventry(latex)
+    assert len(entries) == 1
+    assert entries[0]["title"] == "Caching Proxy"
+    assert entries[0]["link_url"] == "https://github.com/Abhineshhh/caching-proxy"
+    assert r"\href" not in entries[0]["title"]
+
+
 def run_all_tests():
     """Run all tests and print results."""
     tests = [
@@ -219,6 +296,10 @@ def run_all_tests():
         ("Summary Text Extraction", test_get_summary_text),
         ("LaTeX Parser", test_latex_parser),
         ("Double Backslash Braces", test_double_backslash_braces),
+        ("Date Range Parsing", test_parse_date_range),
+        ("Experience LaTeX Parsing", test_parse_experience_from_latex),
+        ("Education LaTeX Parsing", test_parse_education_from_latex),
+        ("CVEntry Title Href", test_cventry_title_href_extraction),
     ]
     
     passed = 0

@@ -1,1 +1,2 @@
-requests
+# No third-party Python packages required for core resume generation.
+# Reserved for optional future tooling (e.g. linters, pytest).

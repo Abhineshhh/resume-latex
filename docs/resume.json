@@ -29,16 +29,26 @@
   },
   "work": [
     {
-      "name": "Contract",
-      "position": "AI Tutor - Software Engineering",
+      "name": "xAI",
+      "position": "AI Tutor - Software Engineering (Contract)",
       "url": "",
-      "startDate": "",
+      "startDate": "2026-05",
       "endDate": "",
       "summary": "Evaluated AI-generated software engineering responses for LLM training.",
       "highlights": [
         "Evaluated AI-generated software engineering responses for LLM training.",
         "Reviewed backend and system design solutions for quality and scalability.",
-        "Improved technical clarity and reasoning accuracy in model-generated outputs.",
+        "Improved technical clarity and reasoning accuracy in model-generated outputs."
+      ]
+    },
+    {
+      "name": "PW Skills",
+      "position": "Backend Developer (Internship)",
+      "url": "",
+      "startDate": "2025-07",
+      "endDate": "2025-10",
+      "summary": "Built RESTful APIs with Java & Spring Boot, cutting response latency by 40%",
+      "highlights": [
         "Built RESTful APIs with Java & Spring Boot, cutting response latency by 40%",
         "Optimized backend pipelines using Collections & Stream API, boosting throughput by 35%",
         "Tuned Hibernate & MySQL queries, reducing execution time from 2s to 100ms",
@@ -79,17 +89,13 @@
     {
       "institution": "Maharshi Dayanand University",
       "url": "",
-      "area": "Computer Science",
+      "area": "2022 - 2026",
       "studyType": "B.Tech",
       "startDate": "2022",
       "endDate": "2026",
-      "score": "8.2/10 CGPA",
+      "score": "8.4/10 CGPA",
       "courses": [
-        "Operating Systems",
-        "Database Management Systems",
-        "Computer Networks",
-        "Data Structures",
-        "Algorithms"
+        "Data Structures"
       ]
     }
   ],
@@ -152,7 +158,7 @@
   "references": [],
   "projects": [
     {
-      "name": "Caching Proxy \\href{https://github.com/Abhineshhh/caching-proxy}{\\faIcon{github}}",
+      "name": "Caching Proxy",
       "description": "Built an HTTP caching proxy in Spring Boot with Redis-backed GET caching to cut redundant API calls and reduce upstream load.",
       "highlights": [
         "Added configurable TTL/invalidation policies and X-Cache observability headers, with Dockerized Redis for consistent local setup."
@@ -165,7 +171,7 @@
       ],
       "startDate": "",
       "endDate": "",
-      "url": "",
+      "url": "https://github.com/Abhineshhh/caching-proxy",
       "roles": [
         "Developer"
       ],
@@ -173,7 +179,7 @@
       "type": "application"
     },
     {
-      "name": "PeerLink - Secure P2P File Sharing Platform \\href{https://github.com/Abhineshhh/Peerlink}{\\faIcon{github}}",
+      "name": "PeerLink - Secure P2P File Sharing Platform",
       "description": "Built a socket-based P2P file sharing system for secure, cloud-free transfers of files larger than 500MB.",
       "highlights": [
         "Engineered a thread-safe transfer engine for 50+ concurrent sessions and improved upload speed by 30% using a custom HTTP parser with layered security controls."
@@ -185,7 +191,7 @@
       ],
       "startDate": "",
       "endDate": "",
-      "url": "",
+      "url": "https://github.com/Abhineshhh/Peerlink",
       "roles": [
         "Developer"
       ],
@@ -193,7 +199,7 @@
       "type": "application"
     },
     {
-      "name": "Dispatchr \\href{https://github.com/Abhineshhh/Dispatchr}{\\faIcon{github}}",
+      "name": "Dispatchr",
       "description": "Built a concurrent bulk email dispatcher in Go using a worker-pool architecture with Goroutines and Channels for high-throughput sends.",
       "highlights": [
         "Reduced runtime overhead by preloading templates at startup and added resilient CSV/error handling so bad rows or failed deliveries do not halt processing."
@@ -206,7 +212,7 @@
       ],
       "startDate": "",
       "endDate": "",
-      "url": "",
+      "url": "https://github.com/Abhineshhh/Dispatchr",
       "roles": [
         "Developer"
       ],

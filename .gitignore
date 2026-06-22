@@ -29,11 +29,16 @@ venv/
 dist/
 build/
 
-# Backup files
+# Node (leftover local installs; not part of this project)
+node_modules/
+
+# Backup / temp
+*.bak
 *.backup
 generate_*.py.backup
-
-# Duplicate/temp directories
+*.py.backup
+*.tex.backup
+*~
 scripts/docs/
 
 # OS files
@@ -41,7 +46,6 @@ scripts/docs/
 Thumbs.db
 *.swp
 *.swo
-*~
 desktop.ini
 
 # IDE
@@ -51,9 +55,6 @@ desktop.ini
 *.sublime-workspace
 *.code-workspace
 
-# Backup files
-*.bak
-*.backup
-*~
-*.py.backup
-*.tex.backup
+# Env / secrets
+.env
+.env.*

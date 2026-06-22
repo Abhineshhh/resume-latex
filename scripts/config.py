@@ -39,7 +39,26 @@ OUTPUT_FILES = {
 # Fallback if parsing fails:
 SUMMARY_TEXT = "Backend developer specializing in Java and Spring Boot with expertise in building production-grade distributed systems."
 
+# Education fallback (primary source is sections/education.tex when parseable)
+EDUCATION = {
+    "institution": "Maharshi Dayanand University",
+    "url": "",
+    "area": "Computer Science",
+    "studyType": "B.Tech",
+    "startDate": "2022",
+    "endDate": "2026",
+    "score": "8.4/10 CGPA",
+    "courses": [
+        "Data Structures & Algorithms",
+        "Operating Systems",
+        "DBMS",
+        "Computer Networks",
+        "OOP",
+    ],
+}
+
 # Open Source Contributions - used by JSON Resume generator
+# Mirrors sections/open_source.tex at a structured level for JSON Resume schema
 OPEN_SOURCE_CONTRIBUTIONS = [
     {
         "organization": "HackSquad by Novu",
@@ -48,7 +67,7 @@ OPEN_SOURCE_CONTRIBUTIONS = [
         "startDate": "2024",
         "endDate": "2024",
         "summary": "Winner of HackSquad open-source program. Developed new features and improved code quality through testing and documentation.",
-        "highlights": []
+        "highlights": [],
     },
     {
         "organization": "Social Summer of Code",
@@ -57,7 +76,7 @@ OPEN_SOURCE_CONTRIBUTIONS = [
         "startDate": "2024",
         "endDate": "2024",
         "summary": "Winner of Social Summer of Code. Enhanced frontend UX and modularized Python programs.",
-        "highlights": []
+        "highlights": [],
     },
     {
         "organization": "Innogeeks Winter of Code",
@@ -66,6 +85,6 @@ OPEN_SOURCE_CONTRIBUTIONS = [
         "startDate": "2023",
         "endDate": "2023",
         "summary": "Winner of Innogeeks Winter of Code. Implemented features and resolved bugs in web applications.",
-        "highlights": []
-    }
+        "highlights": [],
+    },
 ]

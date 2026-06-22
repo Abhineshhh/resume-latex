@@ -7,28 +7,38 @@ Parses data from LaTeX files and config.
 
 import json
 import os
+import sys
 
 # Import configuration and utilities
 from config import PERSONAL_INFO, OUTPUT_FILES, SECTIONS_DIR, OPEN_SOURCE_CONTRIBUTIONS
 from utils import (
     logger, read_file_safe, write_file_safe,
-    parse_cventry, clean_latex_to_plain, get_summary_text, parse_skills_from_latex
+    parse_cventry, clean_latex_to_plain, get_summary_text, parse_skills_from_latex,
+    parse_experience_from_latex, parse_education_from_latex,
 )
 
 OUTPUT_FILE = OUTPUT_FILES['json']
+
+# Fallback skills only if sections/skills.tex cannot be parsed at all
+_FALLBACK_SKILLS = [
+    {"name": "Languages", "level": "", "keywords": ["Java", "Go", "C", "SQL"]},
+    {"name": "Backend & Frameworks", "level": "", "keywords": ["Spring Boot", "Spring MVC", "Spring Security", "FastAPI", "Hibernate"]},
+    {"name": "Databases", "level": "", "keywords": ["MySQL", "PostgreSQL", "MongoDB", "Redis"]},
+    {"name": "DevOps & Tools", "level": "", "keywords": ["Git", "Maven", "Docker", "Linux", "Postman", "Swagger", "CI/CD (GitHub Actions)"]},
+]
 
 
 def parse_projects_from_latex():
     """Parse project data from projects.tex file."""
     filepath = os.path.join(SECTIONS_DIR, "projects.tex")
     content = read_file_safe(filepath)
-    
+
     if not content:
         return []
-    
+
     entries = parse_cventry(content)
     projects = []
-    
+
     for entry in entries:
         # Extract bullet points from content
         highlights = []
@@ -37,152 +47,50 @@ def parse_projects_from_latex():
             line = line.strip()
             if line and not line.startswith('\\'):
                 highlights.append(line)
-        
-        # Extract tech keywords
-        tech_keywords = [t.strip() for t in entry['tech'].split(',')]
-        
+
+        # Extract tech keywords (drop empties from trailing commas)
+        tech_keywords = [t.strip() for t in entry['tech'].split(',') if t.strip()]
+
         # Use first highlight as description but don't duplicate in highlights
         description = highlights[0] if highlights else entry['title']
-        
+
         project = {
             "name": entry['title'],
             "description": description,
-            "highlights": highlights[1:] if len(highlights) > 1 else highlights,
+            "highlights": highlights[1:] if len(highlights) > 1 else [],
             "keywords": tech_keywords,
             "startDate": "",
             "endDate": "",
-            "url": entry['link_url'] if entry['link_url'] else "",
+            "url": entry['link_url'] or "",
             "roles": ["Developer"],
             "entity": "",
-            "type": "application"
+            "type": "application",
         }
         projects.append(project)
-    
+
     return projects
 
 
-def parse_experience_from_latex():
-    """Parse work experience data from experience.tex file."""
-    filepath = os.path.join(SECTIONS_DIR, "experience.tex")
-    content = read_file_safe(filepath)
-    
-    if not content:
-        return []
-    
-    work_experiences = []
-    
-    # Extract company and position from the line: \textbf{Position} \textbar{} \textit{Company}
-    import re
-    position_pattern = r'\\textbf\{([^}]+)\}\s*\\textbar\{\}\s*\\textit\{([^}]+)\}'
-    date_pattern = r'\\textit\{([^}]+)\}'
-    
-    position_match = re.search(position_pattern, content)
-    if not position_match:
-        return []
-    
-    position = position_match.group(1).strip()
-    company = position_match.group(2).strip()
-    
-    # Extract dates (find the last \textit after the position line)
-    dates_part = content[position_match.end():]
-    date_match = re.search(date_pattern, dates_part)
-    dates = date_match.group(1) if date_match else ""
-    
-    # Parse start and end dates
-    start_date = ""
-    end_date = ""
-    if '--' in dates or '-' in dates:
-        parts = re.split(r'\s*--\s*|\s*-\s*', dates)
-        if len(parts) >= 2:
-            start_month_year = parts[0].strip()
-            end_month_year = parts[1].strip()
-            
-            # Convert "July 2025" to "2025-07"
-            month_map = {
-                'January': '01', 'February': '02', 'March': '03', 'April': '04',
-                'May': '05', 'June': '06', 'July': '07', 'August': '08',
-                'September': '09', 'October': '10', 'November': '11', 'December': '12',
-                'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'Jun': '06',
-                'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'
-            }
-            
-            for month, num in month_map.items():
-                if month in start_month_year:
-                    year = start_month_year.split()[-1]
-                    start_date = f"{year}-{num}"
-                    break
-            
-            for month, num in month_map.items():
-                if month in end_month_year:
-                    year = end_month_year.split()[-1]
-                    end_date = f"{year}-{num}"
-                    break
-    
-    # Extract bullet points
-    highlights = []
-    item_pattern = r'\\item\s+([^\n]+)'
-    for match in re.finditer(item_pattern, content):
-        item_text = match.group(1).strip()
-        # Clean LaTeX syntax
-        item_text = clean_latex_to_plain(item_text)
-        if item_text:
-            highlights.append(item_text)
-    
-    # Create work experience entry
-    if position and company and highlights:
-        work_experience = {
-            "name": company,
-            "position": position,
-            "url": "",
-            "startDate": start_date,
-            "endDate": end_date,
-            "summary": highlights[0] if highlights else "",
-            "highlights": highlights
-        }
-        work_experiences.append(work_experience)
-    
-    return work_experiences
-
-
-def parse_open_source_from_config():
-    """Get open source contributions from config.py."""
-    # Return structured data from config for JSON Resume format
-    # Note: The actual LaTeX file uses a different format (paragraph + latest PR)
-    # This structured data is specifically for JSON Resume schema compliance
-    return OPEN_SOURCE_CONTRIBUTIONS
-
-
 def generate_json_resume():
-    """Generate JSON Resume file."""
-    
+    """Generate JSON Resume file. Returns output path on success, None on failure."""
+
     logger.info("Generating JSON resume...")
-    
+
     try:
-        # Parse projects from LaTeX
         projects = parse_projects_from_latex()
-        volunteer = parse_open_source_from_config()
-        
-        # Parse work experience from LaTeX
+        volunteer = OPEN_SOURCE_CONTRIBUTIONS
         work = parse_experience_from_latex()
-        
-        # Get summary from summary.tex
+        education = parse_education_from_latex()
         summary_text = get_summary_text()
-        
-        # Parse skills from skills.tex
+
         skills = parse_skills_from_latex()
         if not skills:
-            logger.warning("No skills parsed, using fallback")
-            skills = [
-                {"name": "Languages", "level": "", "keywords": ["Java", "Python", "C", "C++", "SQL", "JavaScript"]},
-                {"name": "Frameworks & Libraries", "level": "", "keywords": ["Spring Boot", "Spring MVC", "Spring Data JPA", "Spring Security", "Hibernate", "Maven"]},
-                {"name": "Databases", "level": "", "keywords": ["MySQL", "PostgreSQL", "MongoDB"]},
-                {"name": "Tools & Technologies", "level": "", "keywords": ["Git", "Docker", "Postman", "Linux", "Swagger"]}
-            ]
+            logger.warning("No skills parsed from LaTeX, using fallback aligned with skills.tex")
+            skills = _FALLBACK_SKILLS
     except Exception as e:
         logger.error(f"Error during data parsing: {e}")
         return None
-    
-    # Build resume data
+
     resume_data = {
         "basics": {
             "name": PERSONAL_INFO['name'],
@@ -197,41 +105,24 @@ def generate_json_resume():
                 "postalCode": "",
                 "city": PERSONAL_INFO['location'].get('city', ''),
                 "countryCode": PERSONAL_INFO['location'].get('country_code', 'IN'),
-                "region": PERSONAL_INFO['location'].get('region', '')
+                "region": PERSONAL_INFO['location'].get('region', ''),
             },
             "profiles": [
                 {
                     "network": "LinkedIn",
-                    "username": PERSONAL_INFO['linkedin'].split('/')[-1],
-                    "url": PERSONAL_INFO['linkedin']
+                    "username": PERSONAL_INFO['linkedin'].rstrip('/').split('/')[-1],
+                    "url": PERSONAL_INFO['linkedin'],
                 },
                 {
                     "network": "GitHub",
-                    "username": PERSONAL_INFO['github'].split('/')[-1],
-                    "url": PERSONAL_INFO['github']
-                }
-            ]
+                    "username": PERSONAL_INFO['github'].rstrip('/').split('/')[-1],
+                    "url": PERSONAL_INFO['github'],
+                },
+            ],
         },
         "work": work,
         "volunteer": volunteer,
-        "education": [
-            {
-                "institution": "Maharshi Dayanand University",
-                "url": "",
-                "area": "Computer Science",
-                "studyType": "B.Tech",
-                "startDate": "2022",
-                "endDate": "2026",
-                "score": "8.2/10 CGPA",
-                "courses": [
-                    "Operating Systems",
-                    "Database Management Systems",
-                    "Computer Networks",
-                    "Data Structures",
-                    "Algorithms"
-                ]
-            }
-        ],
+        "education": education,
         "awards": [],
         "certificates": [],
         "publications": [],
@@ -239,34 +130,35 @@ def generate_json_resume():
         "languages": [
             {
                 "language": "English",
-                "fluency": "Professional"
+                "fluency": "Professional",
             }
         ],
         "interests": [],
         "references": [],
-        "projects": projects
+        "projects": projects,
     }
-    
-    # Write JSON file
+
     try:
         json_content = json.dumps(resume_data, indent=2, ensure_ascii=False)
         success = write_file_safe(OUTPUT_FILE, json_content)
-        
+
         if success:
-            logger.info(f"JSON resume generated successfully")
+            logger.info("JSON resume generated successfully")
             logger.info(f"  Work experience entries: {len(work)}")
             logger.info(f"  Projects parsed: {len(projects)}")
             logger.info(f"  Skills categories: {len(skills)}")
-            logger.info(f"  Validate at: https://jsonresume.org/schema/")
+            logger.info(f"  Education entries: {len(education)}")
+            logger.info("  Validate at: https://jsonresume.org/schema/")
         else:
             logger.error("Failed to write JSON resume")
             return None
     except (TypeError, ValueError) as e:
         logger.error(f"JSON serialization error: {e}")
         return None
-    
+
     return OUTPUT_FILE
 
 
 if __name__ == "__main__":
-    generate_json_resume()
+    result = generate_json_resume()
+    sys.exit(0 if result else 1)
